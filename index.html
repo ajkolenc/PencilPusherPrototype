@@ -1,0 +1,158 @@
+<html>
+
+	<head>
+		<title>0</title>
+
+		<!--Libraries-->
+		<script src="ArlLib/ArlMath.js"></script>
+		<script src="ArlLib/ArlPhysics.js"></script>
+		<script src="ArlLib/ArlDraw.js"></script>
+		<script src="ArlLib/ArlGame.js"></script>
+		<script src="ArlLib/ArlEtc.js"></script>
+
+		<script>
+			//logic
+			var money = 0;
+			var moneyRate = 0;
+			var moneyTimer = new ArlEtc.Timer(1);
+
+			//text
+			var moneyUnit = "moneyz";
+
+			//graphics
+			var dullRed = new ArlDraw.Color(200,100,100,1);
+			var dullBlue = new ArlDraw.Color(100,100,200,1);
+			var darkGrey = new ArlDraw.Color(50,50,50,1);
+			var scribbleList = [];
+			var maxScribbleLength = 800;
+
+			ArlGame.events.onCursorDown = function() {
+				scribbleList.push(new ArlMath.Point(ArlGame.cursorPos.x, ArlGame.cursorPos.y));
+			};
+			ArlGame.events.onCursorMove = function() {
+				if (ArlGame.isCursorDown) {
+					scribbleList.push(new ArlMath.Point(ArlGame.cursorPos.x, ArlGame.cursorPos.y));
+
+					if (ArlMath.pathLength(scribbleList) > maxScribbleLength) {
+						money++;
+						scribbleList = [];
+					}
+				}
+			};
+			ArlGame.events.onCursorUp = function() {
+				scribbleList = [];
+			};
+			ArlGame.events.init = function() {
+				//number of pixels inside the canvas should match the number of pixels it takes up on the screen
+				ArlGame.gameCanvas.width = ArlGame.gameCanvas.scrollWidth;
+				ArlGame.gameCanvas.height = ArlGame.gameCanvas.scrollHeight;
+			};
+			ArlGame.events.mainLoop = function() {
+				ArlDraw.clearCanvas(ArlGame.gameCanvas);
+
+				var curMoney = Math.floor(money + (moneyRate * moneyTimer.percentDone()));	
+				document.getElementById("money").innerHTML = curMoney + " " + moneyUnit;
+				document.title = curMoney;
+				document.getElementById("moneyRate").innerHTML = moneyRate + " " + moneyUnit + " / second";
+
+				if (moneyTimer.isDone()) {
+					money += moneyRate;
+					moneyTimer.reset();
+				}
+
+				drawPaperLines(ArlGame.context, ArlGame.gameCanvas.width, ArlGame.gameCanvas.height, 10, dullRed, dullBlue);
+				ArlDraw.drawPath(ArlGame.context, scribbleList, 2, darkGrey);
+			};
+
+			var drawPaperLines = function (context, width, height, numLines, color1, color2) {
+				var lineSeparation = (height - (height/5)) / numLines;
+				for (var i = 0; i < numLines; i++) {
+					ArlDraw.drawLine(context, 0, (height/5) + (i*lineSeparation), width, (height/5) + (i*lineSeparation), 1, color2);
+				}
+				ArlDraw.drawLine(context, width/6, 0, width/6, height, 2, color1);
+			}
+
+			var buyUpgrade = function(cost, benefit) {
+				if (money >= cost) {
+					money -= cost;
+					moneyRate += benefit;
+				}
+			}
+		</script>
+
+		<style>
+			body {
+				background: #444;
+				color: #aaa;
+				font-family: monospace;
+			}
+			#money {
+				font-size: 80px;
+			}
+			#moneyRate {
+				font-size: 30px;
+			}
+			#menuBar {
+				background: #aaa;
+			}
+			button {
+				color: #333;
+				background: #ccc;
+				border: 1px solid #333;
+				font-family: monospace;
+				font-size: 15px;
+			}
+			button:hover {
+				color: #ccc;
+				background: #333;
+			}
+			.menuButton {
+			}
+			.menuButton:hover {
+			}
+			#ArlGameCanvas {
+				background: #eee;
+				height: 300px;
+				width: 200px;
+				margin: 10px;
+				float: left;
+			}
+			#shop {
+				float: right;
+				width: 300px;
+				font-size: 30px;
+			}
+		</style>
+	</head>
+
+	<body onload="ArlGame.init()">
+		<center>
+		<div id="money">
+			0 moneyz
+		</div>
+		<div id="moneyRate">
+			0 moneyz / second
+		</div>
+		<div id="menuBar">
+			<button class="menuButton" id="deskButton">My Desk</button>
+			<button class="menuButton" id="officeButton">My Office</button>
+			<button class="menuButton" id="employeesButton">My Employees</button>
+			<button class="menuButton" id="emailButton">Email</button>
+		</div>
+		</center>
+
+
+		<div id="mainContent">
+			<canvas id="ArlGameCanvas">
+			</canvas>
+			<div id="shop">
+				OFFICE SUPPLIES
+				<br/>
+				<button onclick="buyUpgrade(5,1);">Buy Pen (5$)</button>
+				<button onclick="buyUpgrade(100,5);">Buy Typewriter (100$)</button>
+				<button onclick="buyUpgrade(1500,100);">Buy Word Processor (1500$)</button>
+			</div>
+		</div>
+	</body>
+
+</html>
