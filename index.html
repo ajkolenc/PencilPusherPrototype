@@ -15,6 +15,8 @@
 			var money = 0;
 			var moneyRate = 0;
 			var moneyTimer = new ArlEtc.Timer(1);
+			var menus = ["deskMenu", "officeMenu", "employeesMenu", "emailMenu"];
+			var menuIndex = 0;
 
 			//text
 			var moneyUnit = "moneyz";
@@ -26,6 +28,12 @@
 			var scribbleList = [];
 			var maxScribbleLength = 800;
 
+			//EVENTS
+			ArlGame.events.resize = function() {
+				//number of pixels inside the canvas should match the number of pixels it takes up on the screen
+				ArlGame.gameCanvas.width = ArlGame.gameCanvas.scrollWidth;
+				ArlGame.gameCanvas.height = ArlGame.gameCanvas.scrollHeight;
+			};
 			ArlGame.events.onCursorDown = function() {
 				scribbleList.push(new ArlMath.Point(ArlGame.cursorPos.x, ArlGame.cursorPos.y));
 			};
@@ -46,6 +54,10 @@
 				//number of pixels inside the canvas should match the number of pixels it takes up on the screen
 				ArlGame.gameCanvas.width = ArlGame.gameCanvas.scrollWidth;
 				ArlGame.gameCanvas.height = ArlGame.gameCanvas.scrollHeight;
+
+				var e = new Employee("Bob", 1000, null);
+				console.log(e.toHTML());
+				//document.body.innerHTML += e.toHTML();
 			};
 			ArlGame.events.mainLoop = function() {
 				ArlDraw.clearCanvas(ArlGame.gameCanvas);
@@ -64,6 +76,7 @@
 				ArlDraw.drawPath(ArlGame.context, scribbleList, 2, darkGrey);
 			};
 
+			//FUNCTIONS
 			var drawPaperLines = function (context, width, height, numLines, color1, color2) {
 				var lineSeparation = (height - (height/5)) / numLines;
 				for (var i = 0; i < numLines; i++) {
@@ -77,6 +90,48 @@
 					money -= cost;
 					moneyRate += benefit;
 				}
+			}
+
+			var getMenu = function(index) {
+				return document.getElementById(menus[index]);
+			}
+
+			var switchMenu = function(index) {
+				getMenu(menuIndex).style.display = "none";
+				menuIndex = index;
+				getMenu(menuIndex).style.display = "block";	
+			}
+
+			//OBJECTS
+			var Employee = function(name, productionRate, boss) {
+				this.name = name;
+				this.productionRate = productionRate;
+				this.boss = boss;
+				if (boss != null) {
+					this.boss.addEmployee(this);
+				}
+				this.employees = [];
+			};
+			Employee.prototype = {
+				addEmployee: function(newEmployee) {
+					this.employees.push(newEmployee);
+				},
+				toHTML: function() {
+					var htmlStr = "";
+
+					htmlStr += "<div class='employeeBoxWrapper'>";
+					htmlStr += "<center>";
+					htmlStr += "^<br/>";
+					htmlStr += "|<br/>";
+					htmlStr += "<div class='employeeBox'>";
+					htmlStr += this.name + "<br/>";
+					htmlStr += this.productionRate + " " + moneyUnit + " / second <br/>";
+					htmlStr += "</div>";
+					htmlStr += "</center>";
+					htmlStr += "</div>";
+
+					return htmlStr;
+				},
 			}
 		</script>
 
@@ -112,20 +167,31 @@
 			}
 			#ArlGameCanvas {
 				background: #eee;
-				height: 300px;
-				width: 200px;
-				margin: 10px;
+				height: 80%;
+				width: 20%;
 				float: left;
 			}
 			#shop {
 				float: right;
-				width: 300px;
+				width: 30%;
 				font-size: 30px;
+			}
+			.employeeBoxWrapper {
+				width: 30%;
+			}
+			.employeeBox {
+				background: #aaa;
+				color: #333;
+				border: 2px solid #333;
+			}
+			#mainContent {
+				height: 60%;
+				margin: 2%;
 			}
 		</style>
 	</head>
 
-	<body onload="ArlGame.init()">
+	<body onload="ArlGame.init()" onresize="ArlGame.resize()">
 		<center>
 		<div id="money">
 			0 moneyz
@@ -134,23 +200,32 @@
 			0 moneyz / second
 		</div>
 		<div id="menuBar">
-			<button class="menuButton" id="deskButton">My Desk</button>
-			<button class="menuButton" id="officeButton">My Office</button>
-			<button class="menuButton" id="employeesButton">My Employees</button>
-			<button class="menuButton" id="emailButton">Email</button>
+			<button class="menuButton" id="deskButton" onclick="switchMenu(0);">My Desk</button>
+			<button class="menuButton" id="officeButton" onclick="switchMenu(1);">My Office</button>
+			<button class="menuButton" id="employeesButton" onclick="switchMenu(2);">My Employees</button>
+			<button class="menuButton" id="emailButton" onclick="switchMenu(3);">Email</button>
 		</div>
 		</center>
 
 
 		<div id="mainContent">
-			<canvas id="ArlGameCanvas">
-			</canvas>
-			<div id="shop">
-				OFFICE SUPPLIES
-				<br/>
-				<button onclick="buyUpgrade(5,1);">Buy Pen (5$)</button>
-				<button onclick="buyUpgrade(100,5);">Buy Typewriter (100$)</button>
-				<button onclick="buyUpgrade(1500,100);">Buy Word Processor (1500$)</button>
+			<div id="deskMenu">
+				<canvas id="ArlGameCanvas">
+				</canvas>
+				<div id="shop">
+					OFFICE SUPPLIES
+					<br/>
+					<button onclick="buyUpgrade(5,1);">Buy Pen (5$)</button>
+					<button onclick="buyUpgrade(100,5);">Buy Typewriter (100$)</button>
+					<button onclick="buyUpgrade(1500,100);">Buy Word Processor (1500$)</button>
+				</div>
+			</div>
+			<div id="officeMenu" style="display:none;">
+			</div>
+			<div id="employeesMenu" style="display:none;">
+				some stuff I guess
+			</div>
+			<div id="emailMenu" style="display:none;">
 			</div>
 		</div>
 	</body>
