@@ -74,17 +74,22 @@
 	}
 	
 	function user_update($username, $money, $production, $timestamp){
-		$query = "UPDATE employees SET Money='$money', Production='$production', LastUpdate='$timestamp' WHERE Username='$username';";
+		$query = "UPDATE employees SET Money='$money', Production='$production', LastUpdated='$timestamp' WHERE Username='$username';";
+		database_query($query);	
+	}
+	
+	function update_boss($username, $money){
+		$query = "UPDATE employees SET Money='$money' WHERE Username='$username';";
 		database_query($query);	
 	}
 	
 	function user_online($username, $timestamp){
-		$query = "UPDATE employees SET LastUpdate='$timestamp', Online='1' WHERE Username='$username';";
+		$query = "UPDATE employees SET LastUpdated='$timestamp', Online='1' WHERE Username='$username';";
 		database_query($query);
 	}
 	
 	function user_offline($username, $timestamp){
-		$query = "UPDATE employees SET LastUpdate='$timestamp', Online='0' WHERE Username='$username';";
+		$query = "UPDATE employees SET LastUpdated='$timestamp', Online='0' WHERE Username='$username';";
 		database_query($query);
 	}
 
@@ -137,6 +142,28 @@
 	function remove_bid($bidder, $username){
 		$query = "DELETE FROM employee_bids WHERE Username='$username' AND Bidder='$bidder';";
 		database_query($query);
+	}
+	
+	function notify_user($username, $sender, $code, $variable){
+		$query = "INSERT INTO notifications VALUES ('$username', '$sender', '$code', '$variable');";
+		database_query($query);	
+	}
+	
+	function get_notifications($username){
+		$query = "SELECT * FROM notifications WHERE Username='$username';";
+		$result = database_query($query);
+		$arr = array();
+		if ($result){
+			while ($row = mysqli_fetch_assoc($result)){
+				$arr[] = $row;
+			}
+		}
+		return $arr;
+	}
+	
+	function clear_notifications($username){
+		$query = "DELETE FROM notifications WHERE Username='$username';";
+		database_query($query);		
 	}
 	
 	function database_query($query){
