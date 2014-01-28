@@ -197,6 +197,7 @@
 		foreach ($bossItems as $item){
 			$xml .= "<item>";
 			$xml .= "<name>" . $item["Equipment"] . "</name>";
+			$xml .= "<production>" . get_production($item["Equipment"]) . "</production>";
 			$xml .= "<quantity>" . $item["Quantity"] . "</quantity>";
 			$xml .= "</item>";
 		}
