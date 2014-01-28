@@ -55,8 +55,8 @@
 				ArlGame.gameCanvas.width = ArlGame.gameCanvas.scrollWidth;
 				ArlGame.gameCanvas.height = ArlGame.gameCanvas.scrollHeight;
 
-				var e = new Employee("Bob", 1000, null);
-				console.log(e.toHTML());
+				//var e = new Employee("Bob", 1000, null);
+				//console.log(e.toHTML());
 				//document.body.innerHTML += e.toHTML();
 			};
 			ArlGame.events.mainLoop = function() {
@@ -100,6 +100,13 @@
 				getMenu(menuIndex).style.display = "none";
 				menuIndex = index;
 				getMenu(menuIndex).style.display = "block";	
+
+				if (menuIndex == 2) {
+
+					document.getElementById("bossLevel").innerHTML = e1.toHTML(0, 30);
+					document.getElementById("meLevel").innerHTML = e2.toHTML(0, 40);
+					document.getElementById("employeeLevel1").innerHTML = e3.toHTML(0, 50) + e4.toHTML(30, 50) + e5.toHTML(60, 50);
+				}
 			}
 
 			//OBJECTS
@@ -116,14 +123,14 @@
 				addEmployee: function(newEmployee) {
 					this.employees.push(newEmployee);
 				},
-				toHTML: function() {
+				toHTML: function(leftPos, topPos) {
 					var htmlStr = "";
 
-					htmlStr += "<div class='employeeBoxWrapper'>";
+					htmlStr += "<div class='employeeBoxWrapper' style='color: #000; position: absolute; left: " + leftPos.toString() + "%; top: " + topPos.toString() + "%;'>";
 					htmlStr += "<center>";
 					htmlStr += "^<br/>";
 					htmlStr += "|<br/>";
-					htmlStr += "<div class='employeeBox'>";
+					htmlStr += "<div class='employeeBox' onclick='newEmployeeLevel(" + (topPos + 10).toString() + ");'>";
 					htmlStr += this.name + "<br/>";
 					htmlStr += this.productionRate + " " + moneyUnit + " / second <br/>";
 					htmlStr += "</div>";
@@ -133,6 +140,23 @@
 					return htmlStr;
 				},
 			}
+
+			var newEmployeeLevel = function(topPos) {
+				document.getElementById("employeesMenu").innerHTML += e7.toHTML(0, topPos) + e8.toHTML(30, topPos);
+				document.getElementById("employeesMenu").style.height = (topPos + 30).toString() + "%";
+			}
+
+			//test
+			var e1 = new Employee("MY BOSS", 10000, null);
+			var e2 = new Employee("ME", 4500, e1);
+			var e3 = new Employee("Bob", 100, e2);
+			var e4 = new Employee("Sally", 10, e2);
+			var e5 = new Employee("Lucy", 55, e2);
+			var e6 = new Employee("Sarah", 10, e3);
+			var e7 = new Employee("Leon", 55, e4);
+			var e8 = new Employee("Jimmy", 10, e4);
+			var e9 = new Employee("Judy", 55, e5);
+			var e4 = new Employee("Joyce", 10, e5);
 		</script>
 
 		<style>
@@ -188,10 +212,14 @@
 				height: 60%;
 				margin: 2%;
 			}
+			.employeeLevel {
+
+			}
 		</style>
 	</head>
 
 	<body onload="ArlGame.init()" onresize="ArlGame.resize()">
+		PENCIL PUSHER
 		<center>
 		<div id="money">
 			0 moneyz
@@ -223,7 +251,9 @@
 			<div id="officeMenu" style="display:none;">
 			</div>
 			<div id="employeesMenu" style="display:none;">
-				some stuff I guess
+				<div id="bossLevel" class="employeeLevel"></div>
+				<div id="meLevel" class="employeeLevel"></div>
+				<div id="employeeLevel1" class="employeeLevel"></div>
 			</div>
 			<div id="emailMenu" style="display:none;">
 			</div>
