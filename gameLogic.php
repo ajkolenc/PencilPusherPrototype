@@ -1,8 +1,8 @@
 <?php
 	include("database.php");
 	
-//	$username = $_POST["Username"];
-	$username = "Tester";
+	$username = $_POST["Username"];
+//	$username = "Tester";
 	$userInfo = user_info($username);
 	$userItems = get_equipment($username);
 	
