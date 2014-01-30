@@ -17,16 +17,27 @@
 			var moneyTimer = new ArlEtc.Timer(1);
 			var menus = ["deskMenu", "officeMenu", "employeesMenu", "emailMenu"];
 			var menuIndex = 0;
+			var employeeLevelDepth = 0;
 
 			//text
 			var moneyUnit = "moneyz";
+			var quoteChar = '"';
+			var quoteChar_Single = "'";
+			var myName = "ME";
+			var myBossName = "MY BOSS";
 
 			//graphics
 			var dullRed = new ArlDraw.Color(200,100,100,1);
 			var dullBlue = new ArlDraw.Color(100,100,200,1);
+			var dullGreen = new ArlDraw.Color(100,200,100,1);
 			var darkGrey = new ArlDraw.Color(50,50,50,1);
+			var employeeColor1 = new ArlDraw.Color(200,200,200,1);
+			var employeeColor2 = new ArlDraw.Color(150,150,150,1);
 			var scribbleList = [];
 			var maxScribbleLength = 800;
+
+			//data
+			var employeeList = [];
 
 			//EVENTS
 			ArlGame.events.resize = function() {
@@ -103,9 +114,15 @@
 
 				if (menuIndex == 2) {
 
-					document.getElementById("bossLevel").innerHTML = e1.toHTML(0, 30);
-					document.getElementById("meLevel").innerHTML = e2.toHTML(0, 40);
-					document.getElementById("employeeLevel1").innerHTML = e3.toHTML(0, 50) + e4.toHTML(30, 50) + e5.toHTML(60, 50);
+					/*
+					document.getElementById("bossLevel").innerHTML = e1.toHTML(0, 30, 0);
+					document.getElementById("meLevel").innerHTML = e2.toHTML(0, 40, 1);
+					document.getElementById("employeesMenu").innerHTML += e3.toHTML(0, 50, 2) + e4.toHTML(30, 50, 2) + e5.toHTML(60, 50, 2);
+					*/
+
+					newBossLevel(e1.name);
+					newEmployeeLevel(1, e1.name);
+					newEmployeeLevel(2, e2.name);
 				}
 			}
 
@@ -123,14 +140,14 @@
 				addEmployee: function(newEmployee) {
 					this.employees.push(newEmployee);
 				},
-				toHTML: function(leftPos, topPos) {
+				toHTML: function(level) {
 					var htmlStr = "";
 
-					htmlStr += "<div class='employeeBoxWrapper' style='color: #000; position: absolute; left: " + leftPos.toString() + "%; top: " + topPos.toString() + "%;'>";
+					htmlStr += "<div class='employeeBoxWrapper' style='color: #000; position: relative; float:left;'>";
 					htmlStr += "<center>";
 					htmlStr += "^<br/>";
 					htmlStr += "|<br/>";
-					htmlStr += "<div class='employeeBox' onclick='newEmployeeLevel(" + (topPos + 10).toString() + ");'>";
+					htmlStr += "<div class='employeeBox' onclick='newEmployeeLevel(" + (level + 1).toString() + "," + quoteChar + this.name + quoteChar + ", employeeColor1);'>";
 					htmlStr += this.name + "<br/>";
 					htmlStr += this.productionRate + " " + moneyUnit + " / second <br/>";
 					htmlStr += "</div>";
@@ -141,9 +158,73 @@
 				},
 			}
 
-			var newEmployeeLevel = function(topPos) {
-				document.getElementById("employeesMenu").innerHTML += e7.toHTML(0, topPos) + e8.toHTML(30, topPos);
-				document.getElementById("employeesMenu").style.height = (topPos + 30).toString() + "%";
+			var newEmployeeLevel = function(level, bossName, color) {
+				console.log("***");
+				console.log(employeeLevelDepth);
+
+				var levelDiv = document.getElementById("employeeLevel" + level.toString());
+				if (levelDiv == null) {
+					document.getElementById("employeesMenu").innerHTML += "<div id='employeeLevel" + level.toString() + "' class='employeeLevel'></div>";
+					levelDiv = document.getElementById("employeeLevel" + level.toString());
+				}
+
+
+				if (level > employeeLevelDepth) {
+					employeeLevelDepth = level;
+				}
+
+				console.log("clear");
+				for (var i = level; i <= employeeLevelDepth; i++) {
+					console.log(i);
+					document.getElementById("employeeLevel" + i.toString()).innerHTML = "";
+				}
+
+				var boss = findEmployeeByName(bossName);
+
+				levelDiv.innerHTML = "";
+				levelDiv.innerHTML += bossName + "'s EMPLOYEES <br/>"
+				for (var i = 0; i < boss.employees.length; i++) {
+					var e = boss.employees[i];
+					levelDiv.innerHTML += e.toHTML(level);
+				}
+
+				if (bossName == myBossName) {
+					levelDiv.style.background = dullBlue.toHTML();
+				}
+				else {
+					if (level % 2 == 0) {
+						levelDiv.style.background = employeeColor1.toHTML();
+					}
+					else {
+						levelDiv.style.background = employeeColor2.toHTML();
+					}
+				}
+			}
+
+			var newBossLevel = function(bossName, color) {
+				var level = 0;
+				var levelDiv = document.getElementById("employeeLevel" + level.toString());
+				if (levelDiv == null) {
+					document.getElementById("employeesMenu").innerHTML += "<div id='employeeLevel" + (level).toString() + "' class='employeeLevel'></div>";
+					levelDiv = document.getElementById("employeeLevel" + level.toString());
+				}
+
+				var boss = findEmployeeByName(bossName);
+
+				levelDiv.innerHTML = "";
+				levelDiv.innerHTML += "BOSS <br/>"
+				levelDiv.innerHTML += boss.toHTML(level);
+				levelDiv.style.background = dullRed.toHTML();
+			}
+
+			var findEmployeeByName = function(name) {
+				for (var i = 0; i < employeeList.length; i++) {
+					var e = employeeList[i];
+					if (e.name == name) {
+						return e;
+					}
+				}
+				return null;
 			}
 
 			//test
@@ -156,7 +237,12 @@
 			var e7 = new Employee("Leon", 55, e4);
 			var e8 = new Employee("Jimmy", 10, e4);
 			var e9 = new Employee("Judy", 55, e5);
-			var e4 = new Employee("Joyce", 10, e5);
+			var e10 = new Employee("Joyce", 10, e5);
+			var e11 = new Employee("Leon2", 55, e10);
+			var e12 = new Employee("Jimmy2", 10, e10);
+			var e13 = new Employee("Judy2", 55, e10);
+			var e14 = new Employee("Joyce2", 10, e10);
+			employeeList = [e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14];
 		</script>
 
 		<style>
@@ -201,19 +287,24 @@
 				font-size: 30px;
 			}
 			.employeeBoxWrapper {
-				width: 30%;
+				width: 150px;
+				margin-left: 10px;
 			}
 			.employeeBox {
 				background: #aaa;
 				color: #333;
 				border: 2px solid #333;
+				height: 50px;
 			}
 			#mainContent {
 				height: 60%;
 				margin: 2%;
 			}
 			.employeeLevel {
-
+				height: 30%;
+				color: #333;
+				overflow: scroll;
+				overflow-y: none;
 			}
 		</style>
 	</head>
@@ -230,7 +321,7 @@
 		<div id="menuBar">
 			<button class="menuButton" id="deskButton" onclick="switchMenu(0);">My Desk</button>
 			<button class="menuButton" id="officeButton" onclick="switchMenu(1);">My Office</button>
-			<button class="menuButton" id="employeesButton" onclick="switchMenu(2);">My Employees</button>
+			<button class="menuButton" id="employeesButton" onclick="switchMenu(2);">Organizational Chart</button>
 			<button class="menuButton" id="emailButton" onclick="switchMenu(3);">Email</button>
 		</div>
 		</center>
@@ -251,9 +342,6 @@
 			<div id="officeMenu" style="display:none;">
 			</div>
 			<div id="employeesMenu" style="display:none;">
-				<div id="bossLevel" class="employeeLevel"></div>
-				<div id="meLevel" class="employeeLevel"></div>
-				<div id="employeeLevel1" class="employeeLevel"></div>
 			</div>
 			<div id="emailMenu" style="display:none;">
 			</div>
