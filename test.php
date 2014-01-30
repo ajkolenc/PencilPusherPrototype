@@ -8,6 +8,8 @@
 	<input type="radio" name="UpdateType" value="NormalUpdate">Update</input>
 	<input type="hidden" name="NewItem" value="Pen"></input>
 	<input type="radio" name="UpdateType" value="BoughtItem">Buy Pen</input>
+	<input type="radio" name="UpdateType" value="EmployeeInfo">Get info of "The Boss"</input>
+	<input type="hidden" name="Employee" value="The Boss"></input>
 	<input type="radio" name="UpdateType" value="Offline">Offline</input><br/><br/>
 	<input type="submit"></input>
 	</form>

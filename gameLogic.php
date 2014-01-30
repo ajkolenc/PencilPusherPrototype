@@ -1,4 +1,5 @@
 <?php
+	header("Access-Control-Allow-Origin: *");
 	include("database.php");
 	
 	$username = $_POST["Username"];
@@ -38,9 +39,6 @@
 		case "Interacted":
 			interact();
 			break;
-		case "EmployeeInfo":
-			
-			break;
 	}
 	
 	$returnInfo = generate_playerXML();
@@ -70,28 +68,22 @@
 	
 	function interact(){
 		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
-		$userInfo["Money"] += 2;
-	}
-	
-	function accept_bid(){
-		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
-		$employee = $_POST['Employee'];
-		$bid = get_bid($username, $bidder);
-		$bidAmount = $bid['Bid'];
-		$userInfo['Money'] += $bidAmount;
+		$userInfo["Money"] += 1;
+		$bossInfo["Money"] += 1;
 		normal_update();
-		remove_bid($username, $bidder);
-		notify_user($bossInfo["Username"], $username, 1, "");
-		
-		$userInfo['Boss'] = $bidder;
-		$bossInfo = user_info($bidder);
-		$bossItems = get_equipment($bossInfo['Username']);
-		
-		new_boss($username, $bidder);
-		notify_user($bossInfo["Username"], $username, 2, "");
 	}
 	
 	function offer_bid(){
+		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
+		$employee = $_POST['Employee'];
+		$bidAmount = $_POST['BidAmount'];
+		$userInfo['Money'] -= $bidAmount;
+		new_bid($username, $employee, $bidAmount);
+		notify_user($employee, $username, 5, "");
+		normal_update();		
+	}
+	
+	function accept_bid(){
 		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
 		$bidder = $_POST['Bidder'];
 		$bid = get_bid($username, $bidder);
@@ -112,8 +104,12 @@
 	function reject_bid(){
 		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
 		normal_update();
+		$bidder = $_POST['Bidder'];
+		$bidderInfo = user_info($bidder);
+		$bid = get_bid($username, $bidder);
+		update_boss($bidder, $bidderInfo["Money"] + $bid["Bid"]);
 		remove_bid($username, $bidder);	
-		notify_user($bossInfo["Username"], $username, 3, "");
+		notify_user($bidder, $username, 3, "");
 	}
 	
 	function bought_item(){
@@ -176,67 +172,87 @@
 	
 	function generate_playerXML(){
 		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo, $updateType;
-		$xml = "<gameInfo>";
-		$xml = "<player>";
-		$xml .= "<money>" . $userInfo['Money'] . "</money>";	
-		$xml .= "<production>" . $userInfo['Production'] . "</production>";
-		if ($updateType == "Online" || $updateType == "RejectBid" || $updateType == "AcceptBid"){
-			$xml .= "<bids>";
-			$bids = get_bids($username);
-			foreach ($bids as $bid){
-				$xml .= "<bid>";
-				$xml .= "<bidder>" . $bid["Bidder"] . "</bidder>";
-				$xml .= "<amount>" . $bid["Bid"] . "</amount>";
-				$xml .= "</bid>";
+		$xml = "";
+		if ($updateType == "EmployeeInfo"){
+			$name = $_POST["Employee"];
+			$employees = get_employees($name);
+			
+			$xml = "<employeeInfo>";
+			$xml .= "<name>" . $name . "</name>";
+			$xml .= "<employees>";
+			foreach ($employees as $employee){
+				$xml .= "<employee>";
+				$xml .= "<name>" . $employee["Username"] . "</name>";
+				$xml .= "<production>" . $employee["Production"] . "</production>";
+				$xml .= "</employee>";
 			}
-			$xml .= "</bids>";
+			$xml .= "</employees>";
+			$xml .= "</employeeInfo>";
 		}
-		if ($updateType == "Online" || $updateType == "BoughtItem"){
+		else {
+			$xml = "<gameInfo>";
+			$xml = "<player>";
+			$xml .= "<money>" . $userInfo['Money'] . "</money>";	
+			$xml .= "<production>" . $userInfo['Production'] . "</production>";
+			if ($updateType == "Online" || $updateType == "RejectBid" || $updateType == "AcceptBid"){
+				$xml .= "<bids>";
+				$bids = get_bids($username);
+				foreach ($bids as $bid){
+					$xml .= "<bid>";
+					$xml .= "<bidder>" . $bid["Bidder"] . "</bidder>";
+					$xml .= "<amount>" . $bid["Bid"] . "</amount>";
+					$xml .= "</bid>";
+				}
+				$xml .= "</bids>";
+			}
+			if ($updateType == "Online" || $updateType == "BoughtItem"){
+				$xml .= "<items>";
+				foreach ($userItems as $item){
+					$xml .= "<item>";
+					$xml .= "<name>" . $item["Equipment"] . "</name>";
+					$xml .= "<quantity>" . $item["Quantity"] . "</quantity>";
+					$xml .= "</item>";
+				}
+				$xml .= "</items>";
+			}
+			$xml .= "</player>";
+			$xml .= "<employees>";
+			foreach ($employeeInfo as $employee){
+				$xml .= "<employee>";
+				$xml .= "<name>" . $employee['Username'] . "</name>";
+				$xml .= "<production>" . $employee['Production'] . "</production>";
+				$xml .= "</employee>";
+			}
+			$xml .= "</employees>";
+			
+			$xml .= "<boss>";
+			$xml .= "<name>" . $bossInfo["Username"] . "</name>";
 			$xml .= "<items>";
-			foreach ($userItems as $item){
+			foreach ($bossItems as $item){
 				$xml .= "<item>";
 				$xml .= "<name>" . $item["Equipment"] . "</name>";
+				$xml .= "<production>" . get_production($item["Equipment"]) . "</production>";
 				$xml .= "<quantity>" . $item["Quantity"] . "</quantity>";
 				$xml .= "</item>";
 			}
 			$xml .= "</items>";
-		}
-		$xml .= "</player>";
-		$xml .= "<employees>";
-		foreach ($employeeInfo as $employee){
-			$xml .= "<employee>";
-			$xml .= "<name>" . $employee['Username'] . "</name>";
-			$xml .= "<production>" . $employee['Production'] . "</production>";
-			$xml .= "</employee>";
-		}
-		$xml .= "</employees>";
-		
-		$xml .= "<boss>";
-		$xml .= "<name>" . $bossInfo["Username"] . "</name>";
-		$xml .= "<items>";
-		foreach ($bossItems as $item){
-			$xml .= "<item>";
-			$xml .= "<name>" . $item["Equipment"] . "</name>";
-			$xml .= "<production>" . get_production($item["Equipment"]) . "</production>";
-			$xml .= "<quantity>" . $item["Quantity"] . "</quantity>";
-			$xml .= "</item>";
-		}
-		$xml .= "</items>";
-		$xml .= "</boss>";
-		
-		$notifications = get_notifications($username);
-		if (count($notifications) > 0){
-			$xml .= "<notifications>";
-			foreach ($notifications as $notification){
-				$xml .= "<notification>";
-				$xml .= "<sender>" . $notification["Sender"] . "</sender>";
-				$xml .= "<message>" . get_message($notification["Sender"], $notification["MessageCode"], $notification["MessageVariable"]) . "</message>";
-				$xml .= "</notification>";
+			$xml .= "</boss>";
+			
+			$notifications = get_notifications($username);
+			if (count($notifications) > 0){
+				$xml .= "<notifications>";
+				foreach ($notifications as $notification){
+					$xml .= "<notification>";
+					$xml .= "<sender>" . $notification["Sender"] . "</sender>";
+					$xml .= "<message>" . get_message($notification["Sender"], $notification["MessageCode"], $notification["MessageVariable"]) . "</message>";
+					$xml .= "</notification>";
+				}
+
+				$xml .= "</notifications>";
+				clear_notifications();
 			}
-			$xml .= "</notifications>";
-			clear_notifications();
+			$xml .= "</gameInfo>";	
 		}
-		$xml .= "</gameInfo>";
 		return $xml;
 	}
 	
@@ -257,6 +273,9 @@
 			case 4:
 				$message = "Your boss has bought you a new $variable!";
 				break;
+			case 5:
+				$message = "You have a new job offer!";
+				break;				
 		}
 		return $message;
 	}
