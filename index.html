@@ -33,11 +33,14 @@
 			var darkGrey = new ArlDraw.Color(50,50,50,1);
 			var employeeColor1 = new ArlDraw.Color(200,200,200,1);
 			var employeeColor2 = new ArlDraw.Color(150,150,150,1);
+			var emailUnread = new ArlDraw.Color(230,230,230,1);
+			var emailRead = new ArlDraw.Color(120,120,120,1);
 			var scribbleList = [];
 			var maxScribbleLength = 800;
 
 			//data
 			var employeeList = [];
+			var notificationList = [];
 
 			//EVENTS
 			ArlGame.events.resize = function() {
@@ -47,6 +50,8 @@
 			};
 			ArlGame.events.onCursorDown = function() {
 				scribbleList.push(new ArlMath.Point(ArlGame.cursorPos.x, ArlGame.cursorPos.y));
+
+				notificationList.push(new Notification("test test test"));
 			};
 			ArlGame.events.onCursorMove = function() {
 				if (ArlGame.isCursorDown) {
@@ -85,6 +90,8 @@
 
 				drawPaperLines(ArlGame.context, ArlGame.gameCanvas.width, ArlGame.gameCanvas.height, 10, dullRed, dullBlue);
 				ArlDraw.drawPath(ArlGame.context, scribbleList, 2, darkGrey);
+
+				updateEmailButton();
 			};
 
 			//FUNCTIONS
@@ -108,54 +115,29 @@
 			}
 
 			var switchMenu = function(index) {
+				if (menuIndex == 3) {
+					for (var i = 0; i < notificationList.length; i++) {
+						notificationList[i].isRead = true;
+					}
+				}
+
 				getMenu(menuIndex).style.display = "none";
 				menuIndex = index;
 				getMenu(menuIndex).style.display = "block";	
 
 				if (menuIndex == 2) {
-
-					/*
-					document.getElementById("bossLevel").innerHTML = e1.toHTML(0, 30, 0);
-					document.getElementById("meLevel").innerHTML = e2.toHTML(0, 40, 1);
-					document.getElementById("employeesMenu").innerHTML += e3.toHTML(0, 50, 2) + e4.toHTML(30, 50, 2) + e5.toHTML(60, 50, 2);
-					*/
-
 					newBossLevel(e1.name);
 					newEmployeeLevel(1, e1.name);
 					newEmployeeLevel(2, e2.name);
 				}
-			}
+				else if (menuIndex == 3) {
+					var notificationDiv = document.getElementById("emailMenu")
+					notificationDiv.innerHTML = "";
 
-			//OBJECTS
-			var Employee = function(name, productionRate, boss) {
-				this.name = name;
-				this.productionRate = productionRate;
-				this.boss = boss;
-				if (boss != null) {
-					this.boss.addEmployee(this);
+					for (var i = notificationList.length-1; i >= 0; i--) {
+						notificationDiv.innerHTML += notificationList[i].toHTML();
+					}
 				}
-				this.employees = [];
-			};
-			Employee.prototype = {
-				addEmployee: function(newEmployee) {
-					this.employees.push(newEmployee);
-				},
-				toHTML: function(level) {
-					var htmlStr = "";
-
-					htmlStr += "<div class='employeeBoxWrapper' style='color: #000; position: relative; float:left;'>";
-					htmlStr += "<center>";
-					htmlStr += "^<br/>";
-					htmlStr += "|<br/>";
-					htmlStr += "<div class='employeeBox' onclick='newEmployeeLevel(" + (level + 1).toString() + "," + quoteChar + this.name + quoteChar + ", employeeColor1);'>";
-					htmlStr += this.name + "<br/>";
-					htmlStr += this.productionRate + " " + moneyUnit + " / second <br/>";
-					htmlStr += "</div>";
-					htmlStr += "</center>";
-					htmlStr += "</div>";
-
-					return htmlStr;
-				},
 			}
 
 			var newEmployeeLevel = function(level, bossName, color) {
@@ -227,6 +209,71 @@
 				return null;
 			}
 
+			var updateEmailButton = function() {
+				var unread = 0;
+				for (var i = 0; i < notificationList.length; i++) {
+					if (!notificationList[i].isRead) {
+						unread++;
+					}
+				}
+				document.getElementById("emailButton").innerHTML = "Email Inbox (" + unread.toString() + ")";
+			}
+
+			//OBJECTS
+			var Employee = function(name, productionRate, boss) {
+				this.name = name;
+				this.productionRate = productionRate;
+				this.boss = boss;
+				if (boss != null) {
+					this.boss.addEmployee(this);
+				}
+				this.employees = [];
+			};
+			Employee.prototype = {
+				addEmployee: function(newEmployee) {
+					this.employees.push(newEmployee);
+				},
+				toHTML: function(level) {
+					var htmlStr = "";
+
+					htmlStr += "<div class='employeeBoxWrapper' style='color: #000; position: relative; float:left;'>";
+					htmlStr += "<center>";
+					htmlStr += "^<br/>";
+					htmlStr += "|<br/>";
+					htmlStr += "<div class='employeeBox' onclick='newEmployeeLevel(" + (level + 1).toString() + "," + quoteChar + this.name + quoteChar + ", employeeColor1);'>";
+					htmlStr += this.name + "<br/>";
+					htmlStr += this.productionRate + " " + moneyUnit + " / second <br/>";
+					htmlStr += "</div>";
+					htmlStr += "</center>";
+					htmlStr += "</div>";
+
+					return htmlStr;
+				},
+			};
+
+			var Notification = function(message) {
+				this.message = message;
+				this.isRead = false;
+			};
+			Notification.prototype = {
+				toHTML: function(color) {
+					var htmlStr = "";
+
+					var fontWeight = "normal";
+					var c = emailRead.toHTML();
+					if (!this.isRead) {
+						fontWeight = "bold";
+						c = emailUnread.toHTML();
+					}
+
+					htmlStr += "<div class='notification' style='background: " + c + "; font-weight: " + fontWeight + ";'>";
+					htmlStr += this.message;
+					htmlStr += "</div>";
+
+					return htmlStr;
+				},
+			};
+
 			//test
 			var e1 = new Employee("MY BOSS", 10000, null);
 			var e2 = new Employee("ME", 4500, e1);
@@ -243,6 +290,13 @@
 			var e13 = new Employee("Judy2", 55, e10);
 			var e14 = new Employee("Joyce2", 10, e10);
 			employeeList = [e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14];
+
+			var n1 = new Notification("test 1");
+			var n2 = new Notification("hello world");
+			var n3 = new Notification("the blah blah blah jumps over the blah lazy blah");
+			var n4 = new Notification("the blah blah blah jumps over the blah lazy blah");
+			n4.isRead = true;
+			notificationList = [n1, n2, n3, n4];
 		</script>
 
 		<style>
@@ -306,6 +360,10 @@
 				overflow: scroll;
 				overflow-y: none;
 			}
+			.notification {
+				color: #333;
+				border: 1px solid #666;
+			}
 		</style>
 	</head>
 
@@ -322,7 +380,7 @@
 			<button class="menuButton" id="deskButton" onclick="switchMenu(0);">My Desk</button>
 			<button class="menuButton" id="officeButton" onclick="switchMenu(1);">My Office</button>
 			<button class="menuButton" id="employeesButton" onclick="switchMenu(2);">Organizational Chart</button>
-			<button class="menuButton" id="emailButton" onclick="switchMenu(3);">Email</button>
+			<button class="menuButton" id="emailButton" onclick="switchMenu(3);">Email Inbox (0)</button>
 		</div>
 		</center>
 
