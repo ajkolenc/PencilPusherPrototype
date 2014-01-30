@@ -43,9 +43,10 @@ GameInfo.prototype.update = function(xml){
 		var item = items.childNodes[i];
 		this.player.items.push(new Item(item.getElementsByTagName("name")[0].nodeValue, item.getElementsByTagName("quantity")[0].nodeValue, item.getElementsByTagName("production")[0].nodeValue));
 	}
+	
 	var boss = xmlDoc.getElementsByTagName("boss")[0];
 	this.boss.money = parseInt(boss.getElementsByTagName("money")[0].nodeValue);
-	this.boss.production = parseInt(boss.getElementsByTagName("production")[0].nodeValue);	
+	this.boss.production = parseInt(boss.getElementsByTagName("production")[0].nodeValue);
 	items = boss.getElementsByTagName("items")[0];
 	this.boss.items = [];
 	for (var i = 0; i < items.childNodes.length; i++){

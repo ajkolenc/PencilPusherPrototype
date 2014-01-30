@@ -2,19 +2,17 @@
 	include("database.php");
 	
 	$username = $_POST["Username"];
-//	$username = "Tester";
 	$userInfo = user_info($username);
 	$userItems = get_equipment($username);
-	
+		
 	$bossInfo = user_info($userInfo["Boss"]);
 	$bossItems = get_equipment($bossInfo['Username']);
 	
-	$employeesInfo = get_employees($username);
+	$employeeInfo = get_employees($username);
 	$returnInfo = "";
 	
 	$updateType = $_POST["UpdateType"];
 	
-//	$updateType = "NormalUpdate";
 	switch ($updateType){
 		case "NormalUpdate":
 			normal_update();
@@ -28,6 +26,9 @@
 		case "Offline":
 			offline();
 			break;
+		case "OfferBid":
+			offer_bid();
+			break;
 		case "AcceptBid":
 			accept_bid();
 			break;
@@ -37,35 +38,34 @@
 		case "Interacted":
 			interact();
 			break;
+		case "EmployeeInfo":
+			
+			break;
 	}
 	
 	$returnInfo = generate_playerXML();
-	echo $returnInfo;	
+	echo $returnInfo;
 	
 	function normal_update(){
 		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
-		$date = new DateTime($userInfo["LastUpdated"]);
-		$updateTime = (time() - $date->getTimestamp());
+		$updateTime = time() - strtotime($userInfo["LastUpdated"]);
 		$userInfo['Production'] = calculate_production();
 		$moneyEarned = $userInfo['Production'] * $updateTime;
 		$userInfo['Money'] += $moneyEarned / 2;
 		$bossInfo['Money'] += $moneyEarned / 2;
-		$date = new DateTime();
-		user_update($username, $userInfo['Money'], $userInfo['Production'], $date->format(DateTime::ISO8601));
+		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
 		update_boss($bossInfo['Username'], $bossInfo['Money']);
 	}
 	
 	function online(){
 		global $username;
-		$date = new DateTime();
-		user_online($username, $date->format(DateTime::ISO8601));
+		user_online($username, time());
 	}
 	
 	function offline(){
 		global $username;
 		normal_update();
-		$date = new DateTime();
-		user_offline($username, $date->format(DateTime::ISO8601));
+		user_offline($username, time());
 	}
 	
 	function interact(){
@@ -74,6 +74,24 @@
 	}
 	
 	function accept_bid(){
+		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
+		$employee = $_POST['Employee'];
+		$bid = get_bid($username, $bidder);
+		$bidAmount = $bid['Bid'];
+		$userInfo['Money'] += $bidAmount;
+		normal_update();
+		remove_bid($username, $bidder);
+		notify_user($bossInfo["Username"], $username, 1, "");
+		
+		$userInfo['Boss'] = $bidder;
+		$bossInfo = user_info($bidder);
+		$bossItems = get_equipment($bossInfo['Username']);
+		
+		new_boss($username, $bidder);
+		notify_user($bossInfo["Username"], $username, 2, "");
+	}
+	
+	function offer_bid(){
 		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
 		$bidder = $_POST['Bidder'];
 		$bid = get_bid($username, $bidder);
@@ -103,11 +121,13 @@
 		normal_update();
 		$item = $_POST['NewItem'];
 		$userInfo["Money"] -= get_cost($item);
+		$assocItem = array("Username" => $username, "Equipment" => $item, "Quantity" => has_equipment($username, $item));
+		$userItems[] = $assocItem;
 		new_equipment($username, $item);
 		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
 		$userItems = get_equipment($username);
 		
-		foreach ($employeesInfo as $employee){
+		foreach ($employeeInfo as $employee){
 			notify_user($employee["Username"], $username, 4, $item);
 		}
 	}
@@ -119,7 +139,7 @@
 			$production += get_production($item["Equipment"]) * $item["Quantity"];
 		}
 		foreach ($bossItems as $item){
-			$production += get_production($item);
+			$production += get_production($item) * $item["Quantity"];
 		}
 		return $production;
 	}
@@ -155,7 +175,7 @@
 	}
 	
 	function generate_playerXML(){
-		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeesInfo, $updateType;
+		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo, $updateType;
 		$xml = "<gameInfo>";
 		$xml = "<player>";
 		$xml .= "<money>" . $userInfo['Money'] . "</money>";	
@@ -183,7 +203,7 @@
 		}
 		$xml .= "</player>";
 		$xml .= "<employees>";
-		foreach ($employeesInfo as $employee){
+		foreach ($employeeInfo as $employee){
 			$xml .= "<employee>";
 			$xml .= "<name>" . $employee['Username'] . "</name>";
 			$xml .= "<production>" . $employee['Production'] . "</production>";
