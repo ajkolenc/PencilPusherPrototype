@@ -1,15 +1,20 @@
 <?php
-	$server = "127.0.0.1";
-	$user = "root";
-	$password = "";
-	$database = "pencilpusher";
+	$server = "db512803470.db.1and1.com";
+	$user = "dbo512803470";
+	$password = "pyramidscheme";
+	$database = "db512803470";
+	
+//	$server = "127.0.0.1";
+//	$user = "root";
+//	$password = "";
+//	$database = "pencilpusher";
+
 	$con = mysqli_connect($server, $user, $password, $database);
-		
+	
 	if (mysqli_connect_errno()){
-		echo "<p> ERROR </p>";
+		echo "<p> ERROR " . mysqli_connect_error() . "</p>";
 	}
-	
-	
+
 	function database_connected(){
 		return !mysqli_connect_errno();
 	}
@@ -42,17 +47,19 @@
 	
 	function new_user($username, $password, $money, $production, $boss){
 		$pass = md5($password);
-		$query = "INSERT INTO employees VALUES ('$username','$pass', '$money', '$production','$boss');";
+		$date = time();
+		$query = "INSERT INTO employees VALUES ('$username','$pass', '$money', '$production','$boss', FROM_UNIXTIME('$date'), '0');";
 		database_query($query);
 	}
 
 	function has_equipment($username, $equipment){
 		$query = "SELECT * FROM employee_equipment WHERE Username='$username' AND Equipment='$equipment'";
-		if (mysqli_fetch_array(database_query($query))){
-			return true;
+		$info = mysqli_fetch_assoc(database_query($query));
+		if ($info){
+			return $info["Quantity"];
 		}
 		else {
-			return false;
+			return 0;
 		}
 	}
 	
@@ -60,9 +67,10 @@
 		$query = "INSERT INTO employee_equipment VALUES ('$username', '$equipment', '1')";
 		
 		$quantity = has_equipment($username, $equipment);
+
 		if ($quantity > 0){
-			$quantity++;
-			$query = "UPDATE employee_equipment SET Quantity='$quantity', WHERE Username='$username' AND Equipment='$equipment';";
+			$quantity += 1;
+			$query = "UPDATE employee_equipment SET Quantity='$quantity' WHERE Username='$username' AND Equipment='$equipment';";
 		}
 		
 		database_query($query);
@@ -74,7 +82,7 @@
 	}
 	
 	function user_update($username, $money, $production, $timestamp){
-		$query = "UPDATE employees SET Money='$money', Production='$production', LastUpdated='$timestamp' WHERE Username='$username';";
+		$query = "UPDATE employees SET Money='$money', Production='$production', LastUpdated=FROM_UNIXTIME('$timestamp') WHERE Username='$username';";
 		database_query($query);	
 	}
 	
@@ -84,12 +92,13 @@
 	}
 	
 	function user_online($username, $timestamp){
-		$query = "UPDATE employees SET LastUpdated='$timestamp', Online='1' WHERE Username='$username';";
+//		$query = "UPDATE employees SET Online='1' WHERE Username='$username';";
+		$query = "UPDATE employees SET LastUpdated=FROM_UNIXTIME('$timestamp'), Online='1' WHERE Username='$username';";
 		database_query($query);
 	}
 	
 	function user_offline($username, $timestamp){
-		$query = "UPDATE employees SET LastUpdated='$timestamp', Online='0' WHERE Username='$username';";
+		$query = "UPDATE employees SET LastUpdated=FROM_UNIXTIME('$timestamp'), Online='0' WHERE Username='$username';";
 		database_query($query);
 	}
 
@@ -122,6 +131,11 @@
 		database_query($query);
 	}
 	
+	function new_bid($username, $employee, $bidAmount){
+		$query = "INSERT INTO employee_bids Values ('$username','$employee', '$bidAmount');";
+		return database_query($query);
+	}
+
 	function get_bid($username, $bidder){
 		$query = "SELECT * FROM employee_bids WHERE Username='$username' AND Bidder='$bidder';";
 		return mysqli_fetch_assoc(database_query($query));

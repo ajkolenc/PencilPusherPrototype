@@ -1,0 +1,38 @@
+<html>
+<head>
+	<style>
+		body 
+		{
+			font-family: Courier New;
+		}
+
+		.main 
+		{
+			margin: 0 auto;
+			margin-top: 20px;
+			width: 200px;
+		}
+		
+		input[type=text]
+		{
+			width: 200px;
+		}
+
+		input[type=password]
+		{
+			width: 200px;
+		}
+	</style>
+</head>
+<body>
+	<section class="main">
+		<form action="registerMember.php" method="post">
+			<h1>Pencil Pusher</h1>
+			Username: <input type="text" name="Username" ></input> <br/>
+			Password: <input type="password" name="Password"></input><br/>
+			Boss: <input type="text" name="Boss"></input><br/><br/>
+			<input type="submit" value="Register" style="float: right;"></input>
+		</form>
+	</section>
+</body>
+</html>

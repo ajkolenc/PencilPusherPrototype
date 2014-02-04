@@ -22,6 +22,29 @@ function Notification(sender, message){
 	this.message = message;
 }
 
+function EmployeeInfo(xml){
+	var parser = new DOMParser();
+	var xmlDoc = parser.parseFromString(xml, "text/xml");
+	
+	var employeeName = xmlDoc.getElementsByTag("name")[0];
+	this.name = employeeInfo.nodeValue;
+	
+	var employees = xmlDoc.getElementsByTag("employees")[0];
+	employees = xmlDoc.getElementsByTag("employee");
+	this.employees = [];
+	
+	for (var i = 0; employees.length; i++){
+		var eName = employees[i].getElementsByTag("name")[0].nodeValue;
+		var eProd = employees[i].getElementsByTag("production")[0].nodeValue;
+		this.employees.push(new Employee(eName, eProd));
+	}
+}
+
+function Employee(name, production){
+	this.name = name;
+	this.production = production;
+}
+
 function GameInfo(username){
 	this.player = new Player(username, 0, 0, []);
 	this.boss = new Player("", 0, 0, []);
@@ -46,6 +69,7 @@ GameInfo.prototype.update = function(xml){
 		var item = items.childNodes[i];
 		this.player.items.push(new Item(item.getElementsByTagName("name")[0].textContent, item.getElementsByTagName("quantity")[0].textContent, item.getElementsByTagName("production")[0].textContent));
 	}
+	
 	var boss = xmlDoc.getElementsByTagName("boss")[0];
 	//this.boss.money = parseInt(boss.getElementsByTagName("money")[0].textContent);
 	this.boss.production = parseInt(boss.getElementsByTagName("production")[0].textContent);
