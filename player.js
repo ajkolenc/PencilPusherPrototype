@@ -81,7 +81,7 @@ GameInfo.prototype.update = function(xml){
 	this.employees = [];
 	for (var i = 0; i < employees.childNodes.length; i++){
 		var employee = employees.childNodes[i];
-		this.employees.push(new Player(employee.getElementsByTagName("name")[0].nodeValue, 0, employee.getElementsByTagName("production")[0].nodeValue, []));
+		this.employees.push(new Employee(employee.getElementsByTagName("name")[0].nodeValue, employee.getElementsByTagName("production")[0].nodeValue));
 	}
 	
 	var notifications = xmlDoc.getElementsByTagName("notifications");
