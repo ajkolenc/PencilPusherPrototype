@@ -4,6 +4,10 @@
 		<title>0</title>
 
 		<!--Libraries-->
+		<script src="jquery-2.1.0.js"></script>
+
+		<script src="player.js"></script>
+
 		<script src="ArlLib/ArlMath.js"></script>
 		<script src="ArlLib/ArlPhysics.js"></script>
 		<script src="ArlLib/ArlDraw.js"></script>
@@ -18,6 +22,9 @@
 			var menus = ["deskMenu", "officeMenu", "employeesMenu", "emailMenu"];
 			var menuIndex = 0;
 			var employeeLevelDepth = 0;
+
+			//ajax server communication
+			var gameInfo;
 
 			//text
 			var moneyUnit = "moneyz";
@@ -51,7 +58,7 @@
 			ArlGame.events.onCursorDown = function() {
 				scribbleList.push(new ArlMath.Point(ArlGame.cursorPos.x, ArlGame.cursorPos.y));
 
-				notificationList.push(new Notification("test test test"));
+				notificationList.push(new Message("test test test"));
 			};
 			ArlGame.events.onCursorMove = function() {
 				if (ArlGame.isCursorDown) {
@@ -71,6 +78,8 @@
 				ArlGame.gameCanvas.width = ArlGame.gameCanvas.scrollWidth;
 				ArlGame.gameCanvas.height = ArlGame.gameCanvas.scrollHeight;
 
+				gameInfo = new GameInfo("Test User 1");
+
 				//var e = new Employee("Bob", 1000, null);
 				//console.log(e.toHTML());
 				//document.body.innerHTML += e.toHTML();
@@ -86,6 +95,20 @@
 				if (moneyTimer.isDone()) {
 					money += moneyRate;
 					moneyTimer.reset();
+
+					$.ajax({
+						url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+						type: 'post',
+						data: {'UpdateType' : 'NormalUpdate', 'Username' : 'Test User 1'},
+						success: function(msg) {
+							console.log(msg); //returns xml whooo which can be parsed by player.js whoo
+							gameInfo.update(msg);
+						},
+						error: function() {
+							console.log("nope nope nope");
+						}
+					});
+					
 				}
 
 				drawPaperLines(ArlGame.context, ArlGame.gameCanvas.width, ArlGame.gameCanvas.height, 10, dullRed, dullBlue);
@@ -126,6 +149,10 @@
 				getMenu(menuIndex).style.display = "block";	
 
 				if (menuIndex == 2) {
+					var employeesDiv = document.getElementById("employeesMenu");
+					employeesDiv.innerHTML = "";
+					employeeLevelDepth = 0;
+
 					newBossLevel(e1.name);
 					newEmployeeLevel(1, e1.name);
 					newEmployeeLevel(2, e2.name);
@@ -251,11 +278,11 @@
 				},
 			};
 
-			var Notification = function(message) {
+			var Message = function(message) {
 				this.message = message;
 				this.isRead = false;
 			};
-			Notification.prototype = {
+			Message.prototype = {
 				toHTML: function(color) {
 					var htmlStr = "";
 
@@ -291,12 +318,10 @@
 			var e14 = new Employee("Joyce2", 10, e10);
 			employeeList = [e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14];
 
-			var n1 = new Notification("test 1");
-			var n2 = new Notification("hello world");
-			var n3 = new Notification("the blah blah blah jumps over the blah lazy blah");
-			var n4 = new Notification("the blah blah blah jumps over the blah lazy blah");
-			n4.isRead = true;
-			notificationList = [n1, n2, n3, n4];
+			var n1 = new Message("test 1");
+			var n2 = new Message("hello world");
+			var n3 = new Message("the blah blah blah jumps over the blah lazy blah");
+			notificationList = [n1, n2, n3];
 		</script>
 
 		<style>
