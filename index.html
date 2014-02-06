@@ -24,7 +24,9 @@
 			var employeeLevelDepth = 0;
 
 			//ajax server communication
+			var username = "Test User 1";
 			var gameInfo;
+			var updateTimer = new ArlEtc.Timer(5);
 
 			//text
 			var moneyUnit = "moneyz";
@@ -78,7 +80,8 @@
 				ArlGame.gameCanvas.width = ArlGame.gameCanvas.scrollWidth;
 				ArlGame.gameCanvas.height = ArlGame.gameCanvas.scrollHeight;
 
-				gameInfo = new GameInfo("Test User 1");
+				//gameInfo = new GameInfo("Test User 1");
+				switchUser("Test User 1");
 
 				//var e = new Employee("Bob", 1000, null);
 				//console.log(e.toHTML());
@@ -87,28 +90,38 @@
 			ArlGame.events.mainLoop = function() {
 				ArlDraw.clearCanvas(ArlGame.gameCanvas);
 
-				var curMoney = Math.floor(money + (moneyRate * moneyTimer.percentDone()));	
+				var realMoneyRate = moneyRate * 0.5;
+
+				var curMoney = Math.floor(money + (realMoneyRate * moneyTimer.percentDone()));	
 				document.getElementById("money").innerHTML = curMoney + " " + moneyUnit;
 				document.title = curMoney;
 				document.getElementById("moneyRate").innerHTML = moneyRate + " " + moneyUnit + " / second";
 
 				if (moneyTimer.isDone()) {
-					money += moneyRate;
+					money += realMoneyRate;
 					moneyTimer.reset();
+				}
 
+				if (updateTimer.isDone()) {
 					$.ajax({
 						url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
 						type: 'post',
-						data: {'UpdateType' : 'NormalUpdate', 'Username' : 'Test User 1'},
+						data: {'UpdateType' : 'NormalUpdate', 'Username' : username},
 						success: function(msg) {
-							console.log(msg); //returns xml whooo which can be parsed by player.js whoo
+							//console.log(msg); //returns xml whooo which can be parsed by player.js whoo
 							gameInfo.update(msg);
+
+							myBossName = gameInfo.boss.username;
+
+							money = gameInfo.player.money;
+							//console.log(gameInfo.player.money);
+							moneyRate = parseInt(gameInfo.player.production)
 						},
 						error: function() {
 							console.log("nope nope nope");
 						}
 					});
-					
+					updateTimer.reset();
 				}
 
 				drawPaperLines(ArlGame.context, ArlGame.gameCanvas.width, ArlGame.gameCanvas.height, 10, dullRed, dullBlue);
@@ -126,10 +139,31 @@
 				ArlDraw.drawLine(context, width/6, 0, width/6, height, 2, color1);
 			}
 
-			var buyUpgrade = function(cost, benefit) {
+			var buyUpgrade = function(cost, itemName) {
 				if (money >= cost) {
+					/*
 					money -= cost;
 					moneyRate += benefit;
+					*/
+
+					money -= cost;
+
+					$.ajax({
+						url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+						type: 'post',
+						data: {'UpdateType' : 'BoughtItem', 'Username' : username, 'NewItem' : itemName},
+						success: function(msg) {
+							console.log(msg); //returns xml whooo which can be parsed by player.js whoo
+							gameInfo.update(msg);
+
+							money = gameInfo.player.money;
+							//console.log(gameInfo.player.money);
+							moneyRate = parseInt(gameInfo.player.production)
+						},
+						error: function() {
+							console.log("nope nope nope");
+						}
+					});
 				}
 			}
 
@@ -153,9 +187,15 @@
 					employeesDiv.innerHTML = "";
 					employeeLevelDepth = 0;
 
+					/*
 					newBossLevel(e1.name);
 					newEmployeeLevel(1, e1.name);
 					newEmployeeLevel(2, e2.name);
+					*/
+					newBossLevel(gameInfo.boss);
+					myBossName = gameInfo.boss.username;
+					newEmployeeLevel(1, gameInfo.boss.username);
+					newEmployeeLevel(2, gameInfo.player.username);
 				}
 				else if (menuIndex == 3) {
 					var notificationDiv = document.getElementById("emailMenu")
@@ -167,10 +207,85 @@
 				}
 			}
 
+			var switchUser = function(newUsername) {
+				username = newUsername;
+				gameInfo = new GameInfo(username);
+				document.getElementById("usernameOutput").innerHTML = "USER: " + username;
+
+				$.ajax({
+					url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+					type: 'post',
+					data: {'UpdateType' : 'NormalUpdate', 'Username' : username},
+					success: function(msg) {
+						//console.log(msg); //returns xml whooo which can be parsed by player.js whoo
+						gameInfo.update(msg);
+
+						money = gameInfo.player.money;
+						//console.log(gameInfo.player.money);
+						moneyRate = parseInt(gameInfo.player.production)
+					},
+					error: function() {
+						console.log("nope nope nope");
+					}
+				});
+			}
+
 			var newEmployeeLevel = function(level, bossName, color) {
 				console.log("***");
 				console.log(employeeLevelDepth);
 
+				$.ajax({
+					url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+					type: 'post',
+					data: {'UpdateType' : 'NormalUpdate', 'Username' : bossName},
+					success: function(msg) {
+						//console.log(msg); //returns xml whooo which can be parsed by player.js whoo
+						var tempGameInfo = new GameInfo(bossName);
+						tempGameInfo.update(msg);
+
+
+						var levelDiv = document.getElementById("employeeLevel" + level.toString());
+						if (levelDiv == null) {
+							document.getElementById("employeesMenu").innerHTML += "<div id='employeeLevel" + level.toString() + "' class='employeeLevel'></div>";
+							levelDiv = document.getElementById("employeeLevel" + level.toString());
+						}
+
+
+						if (level > employeeLevelDepth) {
+							employeeLevelDepth = level;
+						}
+
+						console.log("clear");
+						for (var i = level; i <= employeeLevelDepth; i++) {
+							console.log(i);
+							document.getElementById("employeeLevel" + i.toString()).innerHTML = "";
+						}
+
+						levelDiv.innerHTML = "";
+						levelDiv.innerHTML += bossName + "'s EMPLOYEES <br/>"
+						for (var i = 0; i < tempGameInfo.employees.length; i++) {
+							var e = new Employee(tempGameInfo.employees[i].username, parseInt(tempGameInfo.employees[i].production));
+							levelDiv.innerHTML += e.toHTML(level);
+						}
+
+						if (bossName == myBossName) {
+							levelDiv.style.background = dullBlue.toHTML();
+						}
+						else {
+							if (level % 2 == 0) {
+								levelDiv.style.background = employeeColor1.toHTML();
+							}
+							else {
+								levelDiv.style.background = employeeColor2.toHTML();
+							}
+						}
+					},
+					error: function() {
+						console.log("nope nope nope");
+					}
+				});
+
+				/*
 				var levelDiv = document.getElementById("employeeLevel" + level.toString());
 				if (levelDiv == null) {
 					document.getElementById("employeesMenu").innerHTML += "<div id='employeeLevel" + level.toString() + "' class='employeeLevel'></div>";
@@ -208,8 +323,10 @@
 						levelDiv.style.background = employeeColor2.toHTML();
 					}
 				}
+				*/
 			}
 
+			/*
 			var newBossLevel = function(bossName, color) {
 				var level = 0;
 				var levelDiv = document.getElementById("employeeLevel" + level.toString());
@@ -219,6 +336,23 @@
 				}
 
 				var boss = findEmployeeByName(bossName);
+
+				levelDiv.innerHTML = "";
+				levelDiv.innerHTML += "BOSS <br/>"
+				levelDiv.innerHTML += boss.toHTML(level);
+				levelDiv.style.background = dullRed.toHTML();
+			}
+			*/
+
+			var newBossLevel = function(bossInfo, color) {
+				var level = 0;
+				var levelDiv = document.getElementById("employeeLevel" + level.toString());
+				if (levelDiv == null) {
+					document.getElementById("employeesMenu").innerHTML += "<div id='employeeLevel" + (level).toString() + "' class='employeeLevel'></div>";
+					levelDiv = document.getElementById("employeeLevel" + level.toString());
+				}
+
+				var boss = new Employee(bossInfo.username, bossInfo.production);
 
 				levelDiv.innerHTML = "";
 				levelDiv.innerHTML += "BOSS <br/>"
@@ -389,11 +523,21 @@
 				color: #333;
 				border: 1px solid #666;
 			}
+			#accountInfo {
+				float: right;
+			}
 		</style>
 	</head>
 
 	<body onload="ArlGame.init()" onresize="ArlGame.resize()">
 		PENCIL PUSHER
+		<div id = "accountInfo">
+			<div id="usernameOutput">
+				USER: USERNAME
+			</div>
+			<input id="usernameInput" type="text" placeholder="User Name"></input>
+			<button onclick="switchUser(document.getElementById('usernameInput').value);"> LOGIN </button>
+		</div>
 		<center>
 		<div id="money">
 			0 moneyz
@@ -417,9 +561,9 @@
 				<div id="shop">
 					OFFICE SUPPLIES
 					<br/>
-					<button onclick="buyUpgrade(5,1);">Buy Pen (5$)</button>
-					<button onclick="buyUpgrade(100,5);">Buy Typewriter (100$)</button>
-					<button onclick="buyUpgrade(1500,100);">Buy Word Processor (1500$)</button>
+					<button onclick="buyUpgrade(5,'Pen');">Buy Pen (5$)</button>
+					<button onclick="buyUpgrade(100,'Typewriter');">Buy Typewriter (100$)</button>
+					<button onclick="buyUpgrade(1500,'Word Processor');">Buy Word Processor (1500$)</button>
 				</div>
 			</div>
 			<div id="officeMenu" style="display:none;">

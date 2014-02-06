@@ -58,10 +58,10 @@ GameInfo.prototype.update = function(xml){
 	xmlDox = xmlDoc.getElementsByTagName("gameInfo")[0];
 	
 	var player = xmlDoc.getElementsByTagName("player")[0];
-	console.log(xmlDoc.getElementsByTagName("player")[0]);
+	//console.log(xmlDoc.getElementsByTagName("player")[0]);
 	
 	this.player.money = parseInt(player.getElementsByTagName("money")[0].textContent);
-	console.log(player.getElementsByTagName("money")[0].textContent);
+	//console.log(player.getElementsByTagName("money")[0].textContent);
 	this.player.production = parseInt(player.getElementsByTagName("production")[0].textContent);
 	this.player.items = [];
 	var items = player.getElementsByTagName("items")[0];
