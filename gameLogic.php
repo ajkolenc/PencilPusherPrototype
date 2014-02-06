@@ -191,7 +191,7 @@
 		}
 		else {
 			$xml = "<gameInfo>";
-			$xml = "<player>";
+			$xml .= "<player>";
 			$xml .= "<money>" . $userInfo['Money'] . "</money>";	
 			$xml .= "<production>" . $userInfo['Production'] . "</production>";
 			if ($updateType == "Online" || $updateType == "RejectBid" || $updateType == "AcceptBid"){
@@ -205,16 +205,17 @@
 				}
 				$xml .= "</bids>";
 			}
-			if ($updateType == "Online" || $updateType == "BoughtItem"){
-				$xml .= "<items>";
-				foreach ($userItems as $item){
-					$xml .= "<item>";
-					$xml .= "<name>" . $item["Equipment"] . "</name>";
-					$xml .= "<quantity>" . $item["Quantity"] . "</quantity>";
-					$xml .= "</item>";
-				}
-				$xml .= "</items>";
+			
+			$xml .= "<items>";
+			foreach ($userItems as $item){
+				$xml .= "<item>";
+				$xml .= "<name>" . $item["Equipment"] . "</name>";
+				$xml .= "<quantity>" . $item["Quantity"] . "</quantity>";
+				$xml .= "<production>" . get_production($item["Equipment"]) . "</production>";
+				$xml .= "</item>";
 			}
+			$xml .= "</items>";
+			
 			$xml .= "</player>";
 			$xml .= "<employees>";
 			foreach ($employeeInfo as $employee){
@@ -227,6 +228,7 @@
 			
 			$xml .= "<boss>";
 			$xml .= "<name>" . $bossInfo["Username"] . "</name>";
+			$xml .= "<production>" . $bossInfo['Production'] . "</production>";
 			$xml .= "<items>";
 			foreach ($bossItems as $item){
 				$xml .= "<item>";

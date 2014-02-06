@@ -34,8 +34,8 @@ function EmployeeInfo(xml){
 	this.employees = [];
 	
 	for (var i = 0; employees.length; i++){
-		var eName = employees[i].getElementsByTag("name")[0].nodeValue;
-		var eProd = employees[i].getElementsByTag("production")[0].nodeValue;
+		var eName = employees[i].getElementsByTag("name")[0].textContent;
+		var eProd = parseInt(employees[i].getElementsByTag("production")[0].textContent);
 		this.employees.push(new Employee(eName, eProd));
 	}
 }
@@ -61,13 +61,14 @@ GameInfo.prototype.update = function(xml){
 	//console.log(xmlDoc.getElementsByTagName("player")[0]);
 	
 	this.player.money = parseInt(player.getElementsByTagName("money")[0].textContent);
-	//console.log(player.getElementsByTagName("money")[0].textContent);
+
 	this.player.production = parseInt(player.getElementsByTagName("production")[0].textContent);
 	this.player.items = [];
+	
 	var items = player.getElementsByTagName("items")[0];
 	for (var i = 0; i < items.childNodes.length; i++){
 		var item = items.childNodes[i];
-		this.player.items.push(new Item(item.getElementsByTagName("name")[0].textContent, item.getElementsByTagName("quantity")[0].textContent, item.getElementsByTagName("production")[0].textContent));
+		this.player.items.push(new Item(item.getElementsByTagName("name")[0].textContent, parsetInt(item.getElementsByTagName("quantity")[0].textContent), parseInt(item.getElementsByTagName("production")[0].textContent)));
 	}
 	
 	var boss = xmlDoc.getElementsByTagName("boss")[0];
@@ -78,14 +79,14 @@ GameInfo.prototype.update = function(xml){
 	this.boss.items = [];
 	for (var i = 0; i < items.childNodes.length; i++){
 		var item = items.childNodes[i];
-		this.boss.items.push(new Item(item.getElementsByTagName("name")[0].textContent, item.getElementsByTagName("quantity")[0].textContent, item.getElementsByTagName("production")[0].textContent));
+		this.boss.items.push(new Item(item.getElementsByTagName("name")[0].textContent, parseInt(item.getElementsByTagName("quantity")[0].textContent), parseInt(item.getElementsByTagName("production")[0].textContent)));
 	}
 	
 	var employees = xmlDoc.getElementsByTagName("employees")[0];
 	this.employees = [];
 	for (var i = 0; i < employees.childNodes.length; i++){
 		var employee = employees.childNodes[i];
-		this.employees.push(new Player(employee.getElementsByTagName("name")[0].textContent, 0, employee.getElementsByTagName("production")[0].textContent, []));
+		this.employees.push(new Employee(employee.getElementsByTagName("name")[0].textContent, parseInt(employee.getElementsByTagName("production")[0].textContent)));
 	}
 	
 	var notifications = xmlDoc.getElementsByTagName("notifications");
