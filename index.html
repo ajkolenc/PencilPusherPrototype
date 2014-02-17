@@ -470,8 +470,16 @@
 				color: #aaa;
 				font-family: monospace;
 			}
+			#moneyForBoss {
+				font-size: 50px;
+				color: #faa;
+			}
 			#money {
-				font-size: 80px;
+				font-size: 50px;
+			}
+			#moneyFromEmployees {
+				font-size: 50px;
+				color: #afa;
 			}
 			#moneyRate {
 				font-size: 30px;
@@ -544,25 +552,28 @@
 			<input id="usernameInput" type="text" placeholder="User Name"></input>
 			<button onclick="switchUser(document.getElementById('usernameInput').value);"> LOGIN </button>
 		</div>
+
 		<center>
-		<div id="moneyForBoss">
-			- 0 moneyz
-		</div>
-		<div id="money">
-			0 moneyz
-		</div>
-		<div id = "moneyFromEmployees">
-			+ 0 moneyz
-		</div>
-		<div id="moneyRate">
-			0 moneyz / second
-		</div>
-		<div id="menuBar">
-			<button class="menuButton" id="deskButton" onclick="switchMenu(0);">My Desk</button>
-			<button class="menuButton" id="officeButton" onclick="switchMenu(1);">My Office</button>
-			<button class="menuButton" id="employeesButton" onclick="switchMenu(2);">Organizational Chart</button>
-			<button class="menuButton" id="emailButton" onclick="switchMenu(3);">Email Inbox (0)</button>
-		</div>
+			<div id="moneyForBoss">
+				<center> - 0 moneyz to boss </center>
+			</div>
+			<div id="money">
+				0 moneyz
+			</div>
+			<div id = "moneyFromEmployees">
+				+ 0 moneyz from employees
+			</div>
+			<hr/>
+			<div id="moneyRate">
+				0 moneyz / second
+			</div>
+
+			<div id="menuBar">
+				<button class="menuButton" id="deskButton" onclick="switchMenu(0);">My Desk</button>
+				<button class="menuButton" id="officeButton" onclick="switchMenu(1);">My Office</button>
+				<button class="menuButton" id="employeesButton" onclick="switchMenu(2);">Organizational Chart</button>
+				<button class="menuButton" id="emailButton" onclick="switchMenu(3);">Email Inbox (0)</button>
+			</div>
 		</center>
 
 
