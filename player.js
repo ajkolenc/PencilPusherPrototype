@@ -3,6 +3,7 @@ function Player(username, money, production, items){
 	this.money = money;
 	this.production = production;
 	this.items = items;
+	this.bids = [];
 }
 
 Player.prototype.update = function(money, production, items){
