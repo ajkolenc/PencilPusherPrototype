@@ -73,6 +73,10 @@ GameInfo.prototype.update = function(xml){
 	
 	this.player.bids = [];
 	var bids = player.getElementsByTagName("bids")[0];
+	for (var i = 0; i < bids.childNodes.length; i++){
+		var bid = bids.childNodes[i];
+		this.player.bids.push(new Bid(bid.getElementsByTagName("bidder")[0].textContent, parseInt(bid.getElementsByTagName("amount")[0].textContent)));
+	}
 	
 	this.player.items = [];
 	
