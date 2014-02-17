@@ -194,17 +194,16 @@
 			$xml .= "<player>";
 			$xml .= "<money>" . $userInfo['Money'] . "</money>";	
 			$xml .= "<production>" . $userInfo['Production'] . "</production>";
-			if ($updateType == "Online" || $updateType == "RejectBid" || $updateType == "AcceptBid"){
-				$xml .= "<bids>";
-				$bids = get_bids($username);
-				foreach ($bids as $bid){
-					$xml .= "<bid>";
-					$xml .= "<bidder>" . $bid["Bidder"] . "</bidder>";
-					$xml .= "<amount>" . $bid["Bid"] . "</amount>";
-					$xml .= "</bid>";
-				}
-				$xml .= "</bids>";
+			
+			$xml .= "<bids>";
+			$bids = get_bids($username);
+			foreach ($bids as $bid){
+				$xml .= "<bid>";
+				$xml .= "<bidder>" . $bid["Bidder"] . "</bidder>";
+				$xml .= "<amount>" . $bid["Bid"] . "</amount>";
+				$xml .= "</bid>";
 			}
+			$xml .= "</bids>";
 			
 			$xml .= "<items>";
 			foreach ($userItems as $item){

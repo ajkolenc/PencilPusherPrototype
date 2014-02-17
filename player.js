@@ -22,12 +22,17 @@ function Notification(sender, message){
 	this.message = message;
 }
 
+function Bid(sender, amount){
+	this.sender = sender;
+	this.amount = amount;
+}
+
 function EmployeeInfo(xml){
 	var parser = new DOMParser();
 	var xmlDoc = parser.parseFromString(xml, "text/xml");
 	
 	var employeeName = xmlDoc.getElementsByTag("name")[0];
-	this.name = employeeInfo.nodeValue;
+	this.name = employeeInfo.textContent;
 	
 	var employees = xmlDoc.getElementsByTag("employees")[0];
 	employees = xmlDoc.getElementsByTag("employee");
@@ -50,6 +55,7 @@ function GameInfo(username){
 	this.boss = new Player("", 0, 0, []);
 	this.employees = [];
 	this.notifications = [];
+	this.bids = [];
 }
 
 GameInfo.prototype.update = function(xml){
@@ -63,6 +69,10 @@ GameInfo.prototype.update = function(xml){
 	this.player.money = parseInt(player.getElementsByTagName("money")[0].textContent);
 
 	this.player.production = parseInt(player.getElementsByTagName("production")[0].textContent);
+	
+	this.player.bids = [];
+	var bids = player.getElementsByTagName("bids")[0];
+	
 	this.player.items = [];
 	
 	var items = player.getElementsByTagName("items")[0];
