@@ -60,7 +60,7 @@
 			ArlGame.events.onCursorDown = function() {
 				scribbleList.push(new ArlMath.Point(ArlGame.cursorPos.x, ArlGame.cursorPos.y));
 
-				notificationList.push(new Message("test test test"));
+				//notificationList.push(new Message("test test test"));
 			};
 			ArlGame.events.onCursorMove = function() {
 				if (ArlGame.isCursorDown) {
@@ -237,11 +237,12 @@
 				$.ajax({
 					url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
 					type: 'post',
-					data: {'UpdateType' : 'NormalUpdate', 'Username' : bossName},
+					data: {'UpdateType' : 'EmployeeInfo', 'Employee' : bossName},
 					success: function(msg) {
 						//console.log(msg); //returns xml whooo which can be parsed by player.js whoo
-						var tempGameInfo = new GameInfo(bossName);
-						tempGameInfo.update(msg);
+						console.log(msg);
+						var tempGameInfo = new EmployeeInfo(msg);
+						//tempGameInfo.update(msg);
 
 
 						var levelDiv = document.getElementById("employeeLevel" + level.toString());
@@ -262,9 +263,10 @@
 						}
 
 						levelDiv.innerHTML = "";
-						levelDiv.innerHTML += bossName + "'s EMPLOYEES <br/>"
+						levelDiv.innerHTML += bossName + "'s EMPLOYEES <br/>";
+						console.log(tempGameInfo.employees);
 						for (var i = 0; i < tempGameInfo.employees.length; i++) {
-							var e = new Employee(tempGameInfo.employees[i].username, parseInt(tempGameInfo.employees[i].production));
+							var e = new EmployeeWrapper(tempGameInfo.employees[i].name, tempGameInfo.employees[i].production);
 							levelDiv.innerHTML += e.toHTML(level);
 						}
 
@@ -352,7 +354,7 @@
 					levelDiv = document.getElementById("employeeLevel" + level.toString());
 				}
 
-				var boss = new Employee(bossInfo.username, bossInfo.production);
+				var boss = new EmployeeWrapper(bossInfo.username, bossInfo.production);
 
 				levelDiv.innerHTML = "";
 				levelDiv.innerHTML += "BOSS <br/>"
@@ -381,7 +383,7 @@
 			}
 
 			//OBJECTS
-			var Employee = function(name, productionRate, boss) {
+			var EmployeeWrapper = function(name, productionRate, boss) {
 				this.name = name;
 				this.productionRate = productionRate;
 				this.boss = boss;
@@ -390,7 +392,7 @@
 				}
 				this.employees = [];
 			};
-			Employee.prototype = {
+			EmployeeWrapper.prototype = {
 				addEmployee: function(newEmployee) {
 					this.employees.push(newEmployee);
 				},
@@ -436,6 +438,7 @@
 			};
 
 			//test
+			/*
 			var e1 = new Employee("MY BOSS", 10000, null);
 			var e2 = new Employee("ME", 4500, e1);
 			var e3 = new Employee("Bob", 100, e2);
@@ -451,11 +454,14 @@
 			var e13 = new Employee("Judy2", 55, e10);
 			var e14 = new Employee("Joyce2", 10, e10);
 			employeeList = [e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14];
+			*/
 
+			/*
 			var n1 = new Message("test 1");
 			var n2 = new Message("hello world");
 			var n3 = new Message("the blah blah blah jumps over the blah lazy blah");
 			notificationList = [n1, n2, n3];
+			*/
 		</script>
 
 		<style>
@@ -539,8 +545,14 @@
 			<button onclick="switchUser(document.getElementById('usernameInput').value);"> LOGIN </button>
 		</div>
 		<center>
+		<div id="moneyForBoss">
+			- 0 moneyz
+		</div>
 		<div id="money">
 			0 moneyz
+		</div>
+		<div id = "moneyFromEmployees">
+			+ 0 moneyz
 		</div>
 		<div id="moneyRate">
 			0 moneyz / second
