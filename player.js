@@ -25,17 +25,19 @@ function Notification(sender, message){
 function EmployeeInfo(xml){
 	var parser = new DOMParser();
 	var xmlDoc = parser.parseFromString(xml, "text/xml");
+
+	//console.log(xmlDoc);
 	
-	var employeeName = xmlDoc.getElementsByTag("name")[0];
-	this.name = employeeInfo.nodeValue;
+	var employeeName = xmlDoc.getElementsByTagName("name")[0];
+	this.name = employeeName.textContent;
 	
-	var employees = xmlDoc.getElementsByTag("employees")[0];
-	employees = xmlDoc.getElementsByTag("employee");
+	var employees = xmlDoc.getElementsByTagName("employees")[0];
 	this.employees = [];
 	
-	for (var i = 0; employees.length; i++){
-		var eName = employees[i].getElementsByTag("name")[0].textContent;
-		var eProd = parseInt(employees[i].getElementsByTag("production")[0].textContent);
+	for (var i = 0; i < employees.childNodes.length; i++){
+		console.log(i);
+		var eName = employees.childNodes[i].getElementsByTagName("name")[0].textContent;
+		var eProd = parseInt(employees.childNodes[i].getElementsByTagName("production")[0].textContent);
 		this.employees.push(new Employee(eName, eProd));
 	}
 }
