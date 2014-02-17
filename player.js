@@ -68,7 +68,7 @@ GameInfo.prototype.update = function(xml){
 	var items = player.getElementsByTagName("items")[0];
 	for (var i = 0; i < items.childNodes.length; i++){
 		var item = items.childNodes[i];
-		this.player.items.push(new Item(item.getElementsByTagName("name")[0].textContent, parsetInt(item.getElementsByTagName("quantity")[0].textContent), parseInt(item.getElementsByTagName("production")[0].textContent)));
+		this.player.items.push(new Item(item.getElementsByTagName("name")[0].textContent, parseInt(item.getElementsByTagName("quantity")[0].textContent), parseInt(item.getElementsByTagName("production")[0].textContent)));
 	}
 	
 	var boss = xmlDoc.getElementsByTagName("boss")[0];
