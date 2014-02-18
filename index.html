@@ -139,6 +139,7 @@
 			//FUNCTIONS
 			var defaultUpdate = function(msg) {
 				//console.log(msg); //returns xml whooo which can be parsed by player.js whoo
+
 				gameInfo.update(msg);
 
 				myBossName = gameInfo.boss.username;
@@ -152,9 +153,19 @@
 					moneyRateFromEmployees += gameInfo.employees[i].production / 2;
 				}
 
-				console.log("bids: " + gameInfo.player.bids.length);
-				for (var i = 0; i < gameInfo.player.bids.length; i++) {
-
+				//notifications
+				for (var i = 0; i < gameInfo.notifications.length; i++) {
+					var m = new Message(gameInfo.notifications[i].sender + ": " + gameInfo.notifications[i].message);
+					notificationList.push(m);
+					if (gameInfo.notifications[i].message == "You have a new job offer!") {
+						for (var j = 0; j < gameInfo.player.bids.length; j++) {
+							if (gameInfo.player.bids[j].sender == gameInfo.notifications[i].sender) {
+								//console.log("BIDDD");
+								//console.log(gameInfo.player.bids[j]);
+								m.setBid(gameInfo.player.bids[j].sender);
+							}
+						}
+					}
 				}
 
 			}
@@ -319,9 +330,22 @@
 						document.getElementById("employeeInfoPopup_offerBidButton").onclick = function() {
 							offerBidTo(name);
 						};
-						document.getElementById("employeeInfoPopup_acceptBidButton").onclick = function() {
-							acceptBidFrom(name);
-						};
+
+						var numBids = 0;
+						for (var i = 0; i < gameInfo.player.bids.length; i++) {
+							if (gameInfo.player.bids[i].sender == name) {
+								numBids++;
+							}
+						}
+						
+						if (numBids > 0) {
+							document.getElementById("employeeInfoPopup_acceptBidButton").style.display = "block";
+							document.getElementById("employeeInfoPopup_acceptBidButton").onclick = function() {
+								acceptBidFrom(name);
+							};
+						} else {
+							document.getElementById("employeeInfoPopup_acceptBidButton").style.display = "none";
+						}
 					},
 					error: function() {
 						console.log("nope nope nope");
@@ -369,7 +393,7 @@
 				$.ajax({
 					url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
 					type: 'post',
-					data: {'UpdateType' : 'OfferBid', 'Employee' : name, 'BidAmount' : 10}, //placeholder amount = 10
+					data: {'UpdateType' : 'OfferBid', 'Username' : username, 'Employee' : name, 'BidAmount' : 10}, //placeholder amount = 10
 					success: function(msg) {
 						console.log(msg);
 					},
@@ -383,7 +407,7 @@
 				$.ajax({
 					url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
 					type: 'post',
-					data: {'UpdateType' : 'AcceptBid', 'Bidder' : name},
+					data: {'UpdateType' : 'AcceptBid', 'Username' : username, 'Bidder' : name},
 					success: function(msg) {
 						console.log(msg);
 					},
@@ -430,6 +454,9 @@
 			var Message = function(message) {
 				this.message = message;
 				this.isRead = false;
+
+				this.hasBid = false;
+				this.bidder = "";
 			};
 			Message.prototype = {
 				toHTML: function(color) {
@@ -444,10 +471,17 @@
 
 					htmlStr += "<div class='notification' style='background: " + c + "; font-weight: " + fontWeight + ";'>";
 					htmlStr += this.message;
+					if (this.hasBid) {
+						htmlStr += "<button onclick='openEmployeeInfoPopup(" + quoteChar + this.bidder + quoteChar + ");'>Accept Bid</button>";
+					}
 					htmlStr += "</div>";
 
 					return htmlStr;
 				},
+				setBid: function(bidder) {
+					this.bidder = bidder;
+					this.hasBid = true;
+				}
 			};
 
 			//test

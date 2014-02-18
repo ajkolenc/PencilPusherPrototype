@@ -1,0 +1,1027 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"acc",
+				"acceptBidFrom"
+			],
+			[
+				"employee",
+				"employeeInfoPopup_offerBidButton"
+			],
+			[
+				"employeeInfoPopup_",
+				"employeeInfoPopup_EmployeeNum"
+			],
+			[
+				"pro",
+				"production"
+			],
+			[
+				"back",
+				"background-color"
+			],
+			[
+				"money",
+				"moneyUnit"
+			],
+			[
+				"curMone",
+				"curMoneyForBoss"
+			],
+			[
+				"moneyRat",
+				"moneyRateFromEmployees"
+			],
+			[
+				"moneyRateF",
+				"moneyRateFromEmployees"
+			],
+			[
+				"moneyRate",
+				"moneyRateToBoss"
+			],
+			[
+				"moneyR",
+				"moneyRate"
+			],
+			[
+				"tex",
+				"textContent"
+			],
+			[
+				"player",
+				"playerStart"
+			],
+			[
+				"enemyL",
+				"enemyLight2"
+			],
+			[
+				"int",
+				"int"
+			],
+			[
+				"camera",
+				"cameraOffset"
+			],
+			[
+				"camer",
+				"cameraOffset"
+			],
+			[
+				"mome",
+				"momentums"
+			],
+			[
+				"colli",
+				"collisionNormal"
+			],
+			[
+				"gravi",
+				"gravitationalConstant"
+			],
+			[
+				"new",
+				"newMomentums"
+			],
+			[
+				"mom",
+				"momentum"
+			],
+			[
+				"ca",
+				"canvasId"
+			],
+			[
+				"resi",
+				"resistanceFactor"
+			],
+			[
+				"curPale",
+				"curPaletteIndex"
+			],
+			[
+				"pal",
+				"paletteName1"
+			],
+			[
+				"GetPal",
+				"GetPaletteIndex"
+			],
+			[
+				"GetP",
+				"GetPaletteIndex"
+			],
+			[
+				"curP",
+				"curPalette"
+			],
+			[
+				"len",
+				"length"
+			],
+			[
+				"Color",
+				"ColorPalette"
+			],
+			[
+				"colorN",
+				"colorNames"
+			],
+			[
+				"GetColor",
+				"GetColorIndex"
+			],
+			[
+				"swa",
+				"swapTimer"
+			],
+			[
+				"nex",
+				"nextPaletteIndex"
+			],
+			[
+				"curPal",
+				"curPaletteIndex"
+			],
+			[
+				"tra",
+				"transitionPalette"
+			],
+			[
+				"color",
+				"colorArray"
+			],
+			[
+				"index",
+				"indexEnd"
+			],
+			[
+				"inde",
+				"indexStart"
+			],
+			[
+				"colo",
+				"colorArray"
+			],
+			[
+				"OnMou",
+				"OnMouseDown"
+			],
+			[
+				"size",
+				"font-size"
+			],
+			[
+				"Tut",
+				"TutorialMessages"
+			],
+			[
+				"Tuto",
+				"TutorialIndex"
+			],
+			[
+				"hei",
+				"height"
+			],
+			[
+				"dista",
+				"distanceFromGround"
+			],
+			[
+				"SnowBall",
+				"SnowBallArray"
+			],
+			[
+				"inner",
+				"innerHeight"
+			],
+			[
+				"Stars",
+				"StarList"
+			],
+			[
+				"MaxStar",
+				"MaxStarArc"
+			],
+			[
+				"MaxSt",
+				"MaxStarArc"
+			],
+			[
+				"Moon",
+				"MoonWidthPercent"
+			],
+			[
+				"ra",
+				"radius"
+			],
+			[
+				"SnowB",
+				"SnowBallArray"
+			],
+			[
+				"A",
+				"Array"
+			],
+			[
+				"minsn",
+				"MinSnowBallSize"
+			],
+			[
+				"isS",
+				"isStuck"
+			],
+			[
+				"other",
+				"otherSnowBall"
+			],
+			[
+				"vecto",
+				"vectorTo"
+			],
+			[
+				"m",
+				"momentum"
+			],
+			[
+				"Sno",
+				"SnowBallArray"
+			],
+			[
+				"col",
+				"collisionPoint"
+			],
+			[
+				"strok",
+				"strokeWidth"
+			],
+			[
+				"vector",
+				"vectorAB"
+			],
+			[
+				"dis",
+				"distanceAlongLine"
+			],
+			[
+				"coll",
+				"collisionPoint"
+			],
+			[
+				"ve",
+				"velocity"
+			],
+			[
+				"tran",
+				"translate"
+			],
+			[
+				"grav",
+				"gravForce"
+			],
+			[
+				"Snowb",
+				"SnowBallArray"
+			],
+			[
+				"Snow",
+				"SnowBallArray"
+			],
+			[
+				"CurS",
+				"CurSnowBall"
+			],
+			[
+				"MinSn",
+				"MinSnowBallSize"
+			],
+			[
+				"Cur",
+				"CursorPos"
+			],
+			[
+				"SnowBal",
+				"SnowBallArray"
+			],
+			[
+				"stro",
+				"stroke"
+			],
+			[
+				"stroke",
+				"strokeStyle"
+			],
+			[
+				"SNOWF",
+				"SNOWFLAKES"
+			],
+			[
+				"Cu",
+				"CurrentPalette"
+			],
+			[
+				"fill",
+				"fillStyle"
+			],
+			[
+				"Pred",
+				"PreDawnPalette"
+			],
+			[
+				"NIgh",
+				"NightPalette"
+			],
+			[
+				"Du",
+				"DuskPalette"
+			],
+			[
+				"Day",
+				"DayPalette"
+			],
+			[
+				"Daw",
+				"DawnPalette"
+			],
+			[
+				"MinSta",
+				"MinStarSize"
+			],
+			[
+				"next",
+				"nextIndex"
+			],
+			[
+				"Sky",
+				"SkyIndex"
+			],
+			[
+				"Sk",
+				"SkyIndex"
+			],
+			[
+				"del",
+				"deltaTime"
+			],
+			[
+				"time",
+				"timeOfRevolution"
+			],
+			[
+				"sub",
+				"subdivide"
+			],
+			[
+				"smoothe",
+				"smoothedCurve"
+			],
+			[
+				"pointA",
+				"pointArray"
+			],
+			[
+				"newP",
+				"newPointArray"
+			],
+			[
+				"mid",
+				"midpoint"
+			],
+			[
+				"star",
+				"startPoint"
+			],
+			[
+				"start",
+				"startPoint"
+			],
+			[
+				"vec",
+				"vectorTo"
+			],
+			[
+				"rotat",
+				"rotation"
+			],
+			[
+				"M",
+				"MinSnowSpeed"
+			],
+			[
+				"Min",
+				"MinSnowSpeed"
+			],
+			[
+				"Ma",
+				"MaxSnowSize"
+			],
+			[
+				"Rand",
+				"RandomRange"
+			],
+			[
+				"SnowFl",
+				"SnowFlakeArray"
+			],
+			[
+				"SnowF",
+				"SnowFlakeArray"
+			],
+			[
+				"height",
+				"heightArray"
+			],
+			[
+				"heig",
+				"heightArray"
+			],
+			[
+				"Plane",
+				"PlanetTrail"
+			],
+			[
+				"Planet",
+				"PlanetTrail"
+			],
+			[
+				"S",
+				"SIMULATE"
+			],
+			[
+				"sh",
+				"shrink"
+			],
+			[
+				"Plan",
+				"PlanetTrailArray"
+			],
+			[
+				"PlanetTr",
+				"PlanetTrailArray"
+			],
+			[
+				"Tu",
+				"TutorialMessages"
+			],
+			[
+				"font",
+				"fontsize"
+			],
+			[
+				"le",
+				"length"
+			],
+			[
+				"l",
+				"length"
+			],
+			[
+				"Tutorial",
+				"TutorialMessages"
+			],
+			[
+				"tu",
+				"tutorialDiv"
+			],
+			[
+				"Get",
+				"getElementById"
+			],
+			[
+				"Star",
+				"StartThrow"
+			],
+			[
+				"St",
+				"StartThrow"
+			],
+			[
+				"tim",
+				"timerLength"
+			],
+			[
+				"sta",
+				"startTime"
+			],
+			[
+				"s",
+				"sans-serif"
+			],
+			[
+				"disp",
+				"displacementFromCenter"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "index.html",
+			"settings":
+			{
+				"buffer_size": 19202,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "gameLogic.php",
+			"settings":
+			{
+				"buffer_size": 7668,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "player.js",
+			"settings":
+			{
+				"buffer_size": 4140,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 347.0,
+		"selected_items":
+		[
+			[
+				"package",
+				"Package Control: Install Package"
+			],
+			[
+				"Snippet: ",
+				"Snippet: Function"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 139.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/adamrossledoux/Code/Web/Idle Games/PencilPusherPrototype/index.html",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/minSizeTest.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/minSizeTest3.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/minSizeTest2.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/crazyTestMap.as",
+		"/Users/adamrossledoux/Code/Git/CelestEd/crazyTestMap.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/puzzle_dissapearingDame.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/dungeonLevel.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/adamTestsEverything.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/PlainHouseLevel.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/spriteAttempt1.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/Default.css",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/Room.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/Player.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/Enemy.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/EnemyAnswer.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/EnemyController.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/Light.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/dropletAttempt2.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/dropletAttempt1.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/Assets.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/IndoorHouseLevel.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/showcaseMap1.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/TestLevel1.as",
+		"/Users/adamrossledoux/Code/Processing/CelestEd/maps/examplemapV2.txt",
+		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/org/TestLevel1.as",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/ArlLib v2 (in progress)/arllib2.sublime-project",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/ArlLib v2 (in progress)/ArlPageTest2.html",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/ArlLib v2 (in progress)/arlpagetest.html",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/ArlLib v2 (in progress)/arlphysics.js",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/ArlLib v2 (in progress)/arldraw.js",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/ArlLib v2 (in progress)/arlmath.js",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/ArlLib v2 (in progress)/arlgame.js",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/ArlLib v2 (in progress)/arletc.js",
+		"/Users/adamrossledoux/Code/Web/HTML5 Planet Draw/planetdraw.html",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/arlpagetest.html",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/arlmath.js",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/arlphysics.js",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/arldraw.js",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/arlgame.js",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/arletc.js",
+		"/Users/adamrossledoux/Code/Web/HTML5 Snow Sim/snowsim.html",
+		"/Users/adamrossledoux/Code/Flash/Projects/flixel_primer-master/src/de/pixelate/flixelprimer/Bullet.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/flixel_primer-master/src/de/pixelate/flixelprimer/Ship.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/flixel_primer-master/src/de/pixelate/flixelprimer/Alien.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/flixel_primer-master/src/de/pixelate/flixelprimer/PlayState.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/flixel_primer-master/src/Preloader.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/flixel_primer-master/src/Main.as",
+		"/Users/adamrossledoux/Code/Flash/Projects/FlixelTutorialProject/MenuState.as",
+		"/Users/adamrossledoux/Code/Web/Javascript Libraries/testlib.js",
+		"/Users/adamrossledoux/.Archive/old_code/BlitzMAX/Pilot Goes To Space/EarthDefender3 v2.0/Source/earthdefender.bmx",
+		"/Users/adamrossledoux/Code/Web/HTML5 tutorial/tutorialModified.js",
+		"/Users/adamrossledoux/Code/Web/HTML5 tutorial/tutorial1.html",
+		"/Volumes/PhSp_CS2_UE_Ret/Read Me First.html",
+		"/Users/adamrossledoux/Code/Unity/HeartBeatGameJam2013/HeartBeatGame/Assets/Scripts/GUI/MenuOption.cs",
+		"/Users/adamrossledoux/Code/Processing/Computer Graphics Projects/StudentShaders1/Basics/shaders/basic.frag",
+		"/Users/adamrossledoux/Desktop/Unity Backup Files/Fish.cs",
+		"/Users/adamrossledoux/Code/Processing/Computer Graphics Projects/StudentShaders1/Basics/shaders/twist.vert",
+		"/Users/adamrossledoux/Code/Processing/Computer Graphics Projects/StudentShaders1/Basics/shaders/basic.vert",
+		"/Users/adamrossledoux/Code/Python/Intro_AI/project4/project4.py",
+		"/Users/adamrossledoux/Code/Python/Intro_AI/p4/project4.py",
+		"/Users/adamrossledoux/Code/Python/Intro_AI/project3/bustersAgents.py",
+		"/Users/adamrossledoux/Code/Python/Intro_AI/project3/busters.py",
+		"/Users/adamrossledoux/Code/Python/Intro_AI/project3/inference.py",
+		"/Users/adamrossledoux/Code/Python/Intro_AI/project3/util.py",
+		"/Users/adamrossledoux/Downloads/p3/inference.py",
+		"/private/var/folders/xw/9ftc9jl97c1gs8kysb67c9t80000gn/T/a650e77c-7ec5-4463-ad4c-e1b7c2c86310/third/missingno/gtmob/crowd_catalog/crowd_catalog.html",
+		"/private/var/folders/xw/9ftc9jl97c1gs8kysb67c9t80000gn/T/66edb466-6204-451c-9c07-cc5283223058/third/missingno/gtmob/comments_widget/comments.php",
+		"/private/var/folders/xw/9ftc9jl97c1gs8kysb67c9t80000gn/T/66edb466-6204-451c-9c07-cc5283223058/third/missingno/gtmob/comments_widget/db_helper.php",
+		"/private/var/folders/xw/9ftc9jl97c1gs8kysb67c9t80000gn/T/66edb466-6204-451c-9c07-cc5283223058/third/missingno/gtmob/comments_widget/api.xml",
+		"/private/var/folders/xw/9ftc9jl97c1gs8kysb67c9t80000gn/T/66edb466-6204-451c-9c07-cc5283223058/third/missingno/gtmob/comments_widget/comments.js",
+		"/private/var/folders/xw/9ftc9jl97c1gs8kysb67c9t80000gn/T/66edb466-6204-451c-9c07-cc5283223058/third/missingno/gtmob/comments_widget/comments.html",
+		"/Users/adamrossledoux/Downloads/usercomments/widget.xml",
+		"/Users/adamrossledoux/Downloads/usercomments/comments.html",
+		"/Users/adamrossledoux/Code/HTML5/base_widget/error_log",
+		"/Applications/android-sdk-macosx/samples/android-7/BluetoothChat/res/values/strings.xml",
+		"/Users/adamrossledoux/Code/Python/Intro_AI/project2/multiAgents.py",
+		"/Users/adamrossledoux/Code/Python/Intro to AI/project2/game.py",
+		"/Users/adamrossledoux/Code/Python/Intro to AI/project2/pacman.py",
+		"/Users/adamrossledoux/Downloads/p1/searchAgents.py",
+		"/Users/adamrossledoux/Code/Python/Intro to AI/p1_roughVersion/searchAgents.py",
+		"/Users/adamrossledoux/Code/Python/Intro to AI/Project 1/searchAgents.py",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/chromaticgravitation.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/bio.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/games.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/flyflewflown.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/cyberkites.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/snowwalk.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/onceupon.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/mermaids.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/portfolioStyle.css",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/gamesFolioStyle.css",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/index.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/pictureelement.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/pisa.html",
+		"/Users/adamrossledoux/Code/Web/Portfolio Website (fall 2012)/postmaster.html",
+		"/Users/adamrossledoux/Code/Python/Intro to AI/Project 1/util.py",
+		"/Users/adamrossledoux/Code/Python/Intro to AI/Project 1/search.py",
+		"/Users/adamrossledoux/Code/Python/Intro to AI/oldHeuristicCode-p1.py",
+		"/Users/adamrossledoux/Code/Python/Intro to AI/searchAgents_v2.py",
+		"/Users/adamrossledoux/Code/Python/Intro to AI/searchAgents_v1.py"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"update = ",
+			"moneyRateToBoss",
+			"normalupdate",
+			"employee(",
+			"			2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, \n",
+			"save",
+			"player.x",
+			"playerStart.x",
+			"68",
+			"createplayer",
+			"player",
+			"debugText",
+			"headoutfit",
+			"hat",
+			"hideable",
+			"foregroundgroup",
+			"_levelProgressionIndex",
+			"foreGroundGroup",
+			"map",
+			"normalGameplay",
+			"map",
+			"update",
+			"wallstamp",
+			"wallGroup",
+			"FLOORS",
+			"wallstamp",
+			"map",
+			"inventory",
+			"map",
+			"displaying",
+			"menuBackground",
+			"inventoryBox",
+			"waterDrops",
+			"savepoint",
+			"waterdrops",
+			"sprite ",
+			"hideableobjects",
+			"room",
+			"addenemies",
+			"lightFOV",
+			"enemycontroller",
+			"camerapoint",
+			"enemy",
+			"setCenter",
+			"getCenter",
+			");\n",
+			"arlgame",
+			"friction",
+			"arlgame",
+			"draw",
+			"draw.rect",
+			"touch",
+			"textbox",
+			"tutorialtextbox",
+			"tutorialmessages",
+			"fontsize",
+			"textbox",
+			"celestialbody",
+			"max(1",
+			"minstarsize",
+			"startsnowhe",
+			"startheight",
+			"startsnowheight",
+			"arcpercent",
+			"starlist",
+			"resize",
+			"istouchingground",
+			"hasCollidedThisFrame",
+			"motion",
+			"console.log",
+			"console.log//",
+			"console.log",
+			"CLOSESTPOINT",
+			"exactheightat",
+			"collidesWith",
+			"collideswith",
+			"snowball",
+			"draw = ",
+			"new Vector",
+			"console.log",
+			"console",
+			"tutorialtextbox",
+			"collidesWith",
+			"console.log",
+			"newplanet",
+			"deadp",
+			"ID",
+			"newPlanet",
+			"gini",
+			"Importance",
+			"self.importance",
+			"print",
+			"+=",
+			"print",
+			":\n",
+			"exactinference",
+			"testitemvalue",
+			"connected(",
+			"acceptthread",
+			"onactivityresult",
+			"chatservice",
+			"mhandler",
+			"setupchat",
+			"mchatservice",
+			"debug",
+			"scoreChange",
+			"GameState",
+			"gameState.getScore()",
+			"directions.stop",
+			"score",
+			"Agent:",
+			"agent",
+			"evaluationsFunction",
+			"agent:",
+			"agent ",
+			"agent",
+			"GameState",
+			"debug",
+			"data.score",
+			"list",
+			"food",
+			"foodheuristic",
+			"foodheur",
+			"your code",
+			"foodHeuristic",
+			"60px",
+			"manhattan",
+			"astarsearc"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"setPos",
+			"getPos",
+			"this",
+			"isTouchingGround"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "index.html",
+					"settings":
+					{
+						"buffer_size": 19202,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								19139,
+								19139
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 10422.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 0,
+					"file": "index.html",
+					"settings":
+					{
+						"buffer_size": 19202,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4373,
+								4373
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2164.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "gameLogic.php",
+					"settings":
+					{
+						"buffer_size": 7668,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "player.js",
+					"settings":
+					{
+						"buffer_size": 4140,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"physics",
+				"/Users/adamrossledoux/Code/Web/Javascript Libraries/arlphysics.js"
+			],
+			[
+				"",
+				"/Users/adamrossledoux/Code/Web/Javascript Libraries/arldraw.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true
+}
