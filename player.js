@@ -12,10 +12,14 @@ Player.prototype.update = function(money, production, items){
 	this.items = items;
 }
 
-function Item(name, quantity, production){
+function Item(name, quantity, production, cost){
+	if (typeof cost === 'undefined'){
+		cost = 0;
+	}
 	this.name = name;
 	this.quantity = quantity;
 	this.production = production*quantity;
+	this.cost = cost;
 }
 
 function Notification(sender, message){
@@ -57,6 +61,7 @@ function GameInfo(username){
 	this.boss = new Player("", 0, 0, []);
 	this.employees = [];
 	this.notifications = [];
+	this.store = [];
 }
 
 GameInfo.prototype.update = function(xml){
@@ -78,12 +83,27 @@ GameInfo.prototype.update = function(xml){
 		this.player.bids.push(new Bid(bid.getElementsByTagName("bidder")[0].textContent, parseInt(bid.getElementsByTagName("amount")[0].textContent)));
 	}
 	
-	this.player.items = [];
+	this.player.items = {};
 	
 	var items = player.getElementsByTagName("items")[0];
 	for (var i = 0; i < items.childNodes.length; i++){
 		var item = items.childNodes[i];
-		this.player.items.push(new Item(item.getElementsByTagName("name")[0].textContent, parseInt(item.getElementsByTagName("quantity")[0].textContent), parseInt(item.getElementsByTagName("production")[0].textContent)));
+		this.player.items[item.getElementsByTagName("name")[0].textContent] = new Item(item.getElementsByTagName("name")[0].textContent, parseInt(item.getElementsByTagName("quantity")[0].textContent), parseInt(item.getElementsByTagName("production")[0].textContent));
+	}
+	
+	var store = player.getElementsByTagName("store");
+	if (store.length > 0){
+		this.store = [];
+		store = store[0];
+		for (var i = 0; i < store.childNodes.length; i++){
+			var item = store.childNodes[i];
+			var quantity = 0;
+			var name = item.getElementsByTagName("name")[0].textContent;
+			if (name in this.player.items){
+				quantity = this.player.items[name].quantity;
+			}
+			this.store.push(new Item(name, quantity, parseInt(item.getElementsByTagName("production")[0].textContent), parseFloat(item.getElementsByTagName("cost")[0].textContent)));
+		}
 	}
 	
 	var boss = xmlDoc.getElementsByTagName("boss")[0];

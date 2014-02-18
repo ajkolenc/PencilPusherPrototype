@@ -78,7 +78,7 @@
 		$employee = $_POST['Employee'];
 		$bidAmount = $_POST['BidAmount'];
 		$userInfo['Money'] -= $bidAmount;
-		new_bid($username, $employee, $bidAmount);
+		new_bid($userInfo['Username'], $employee, $bidAmount);
 		notify_user($employee, $username, 5, "");
 		normal_update();		
 	}
@@ -155,16 +155,20 @@
 		return 0;
 	}
 	
-	function get_cost($item){
+	function get_items(){
+		return array("Pen", "Typewriter", "Word Processor");
+	}
+	
+	function get_cost($item, $currentQuantity = 0){
 		switch ($item){
 			case "Pen":
-				return 5;
+				return 5 * (pow(1.15, $currentQuantity));
 				break;
 			case "Typewriter":
-				return 100;
+				return 100 * (pow(1.15, $currentQuantity));
 				break;
 			case "Word Processor":
-				return 1500;
+				return 1500 * (pow(1.15, $currentQuantity));
 				break;	
 		}
 		return 0;
@@ -195,6 +199,23 @@
 			$xml .= "<money>" . $userInfo['Money'] . "</money>";	
 			$xml .= "<production>" . $userInfo['Production'] . "</production>";
 			
+			if ($updateType == "Online" || $updateType == "BoughtItem") {
+				$xml .= "<store>";
+				$soldItems = get_items();
+				foreach ($soldItems as $soldItem){
+					$cost = get_cost($soldItem, 0);
+					if (array_key_exists($soldItem, $userItems)){
+						$cost = get_cost($soldItem, $userItems[$soldItem]["Quantity"]);
+					}
+					$xml .= "<item>";
+					$xml .= "<name>" . $soldItem . "</name>";
+					$xml .= "<production>" . get_production($soldItem) . "</production>";
+					$xml .= "<cost>" . $cost . "</cost>";
+					$xml .= "</item>";
+				}
+				$xml .= "</store>";
+			}
+
 			$xml .= "<bids>";
 			$bids = get_bids($username);
 			foreach ($bids as $bid){
@@ -250,7 +271,7 @@
 				}
 
 				$xml .= "</notifications>";
-				clear_notifications();
+				clear_notifications($username);
 			}
 			$xml .= "</gameInfo>";	
 		}

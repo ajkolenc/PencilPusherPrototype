@@ -78,7 +78,7 @@
 	
 	function new_boss($username, $boss){
 		$query = "UPDATE employees SET Boss='$boss' WHERE Username='$username';";
-		database_query($query);		
+		database_query($query);
 	}
 	
 	function user_update($username, $money, $production, $timestamp){
@@ -120,7 +120,7 @@
 		$arr = array();
 		if ($result){
 			while ($row = mysqli_fetch_assoc($result)){
-				$arr[] = $row;
+				$arr[$row["Equipment"]] = $row;
 			}
 		}
 		return $arr;
@@ -132,7 +132,7 @@
 	}
 	
 	function new_bid($username, $employee, $bidAmount){
-		$query = "INSERT INTO employee_bids Values ('$username','$employee', '$bidAmount');";
+		$query = "INSERT INTO employee_bids Values ('$username', '$employee', '$bidAmount');";
 		return database_query($query);
 	}
 
@@ -142,7 +142,7 @@
 	}
 	
 	function get_bids($username){
-		$query = "SELECT * FROM employee_bids WHERE Username='$username';";
+		$query = "SELECT * FROM employee_bids WHERE Employee='$username';";
 		$result = database_query($query);
 		$arr = array();
 		if ($result){
