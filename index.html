@@ -23,13 +23,18 @@
 			var menuIndex = 0;
 			var employeeLevelDepth = 0;
 
+			var moneyForBoss = 0;
+			var moneyFromEmployees = 0;
+			var moneyRateForBoss = 0;
+			var moneyRateFromEmployees = 0;
+
 			//ajax server communication
 			var username = "Test User 1";
 			var gameInfo;
 			var updateTimer = new ArlEtc.Timer(5);
 
 			//text
-			var moneyUnit = "moneyz";
+			var moneyUnit = "$$$";
 			var quoteChar = '"';
 			var quoteChar_Single = "'";
 			var myName = "ME";
@@ -80,12 +85,7 @@
 				ArlGame.gameCanvas.width = ArlGame.gameCanvas.scrollWidth;
 				ArlGame.gameCanvas.height = ArlGame.gameCanvas.scrollHeight;
 
-				//gameInfo = new GameInfo("Test User 1");
 				switchUser("Test User 1");
-
-				//var e = new Employee("Bob", 1000, null);
-				//console.log(e.toHTML());
-				//document.body.innerHTML += e.toHTML();
 			};
 			ArlGame.events.mainLoop = function() {
 				ArlDraw.clearCanvas(ArlGame.gameCanvas);
@@ -93,12 +93,27 @@
 				var realMoneyRate = moneyRate * 0.5;
 
 				var curMoney = Math.floor(money + (realMoneyRate * moneyTimer.percentDone()));	
+
+				var curMoneyForBoss = Math.floor(moneyForBoss + (moneyRateForBoss * moneyTimer.percentDone()));	
+				var curMoneyFromEmployees = Math.floor(moneyFromEmployees + (moneyRateFromEmployees * moneyTimer.percentDone()));	
+
 				document.getElementById("money").innerHTML = curMoney + " " + moneyUnit;
 				document.title = curMoney;
+
+				document.getElementById("moneyForBoss").innerHTML = "- " + curMoneyForBoss + " " + moneyUnit + " to boss";
+				document.getElementById("moneyFromEmployees").innerHTML = "+ " + curMoneyFromEmployees + " " + moneyUnit + " from employees";			
+
 				document.getElementById("moneyRate").innerHTML = moneyRate + " " + moneyUnit + " / second";
+
+				document.getElementById("moneyRateForBoss").innerHTML = "- " + moneyRateForBoss + " " + moneyUnit + " / second to boss";
+				document.getElementById("moneyRateFromEmployees").innerHTML = "+ " + moneyRateFromEmployees + " " + moneyUnit + " / second from employees";
 
 				if (moneyTimer.isDone()) {
 					money += realMoneyRate;
+
+					moneyForBoss += moneyRateForBoss;
+					moneyFromEmployees += moneyRateFromEmployees;
+
 					moneyTimer.reset();
 				}
 
@@ -107,16 +122,7 @@
 						url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
 						type: 'post',
 						data: {'UpdateType' : 'NormalUpdate', 'Username' : username},
-						success: function(msg) {
-							//console.log(msg); //returns xml whooo which can be parsed by player.js whoo
-							gameInfo.update(msg);
-
-							myBossName = gameInfo.boss.username;
-
-							money = gameInfo.player.money;
-							//console.log(gameInfo.player.money);
-							moneyRate = parseInt(gameInfo.player.production)
-						},
+						success: defaultUpdate,
 						error: function() {
 							console.log("nope nope nope");
 						}
@@ -131,6 +137,28 @@
 			};
 
 			//FUNCTIONS
+			var defaultUpdate = function(msg) {
+				//console.log(msg); //returns xml whooo which can be parsed by player.js whoo
+				gameInfo.update(msg);
+
+				myBossName = gameInfo.boss.username;
+
+				money = gameInfo.player.money;
+				//console.log(gameInfo.player.money);
+				moneyRate = parseInt(gameInfo.player.production)
+				moneyRateForBoss = moneyRate / 2;
+				moneyRateFromEmployees = 0;
+				for (var i = 0; i < gameInfo.employees.length; i++) {
+					moneyRateFromEmployees += gameInfo.employees[i].production / 2;
+				}
+
+				console.log("bids: " + gameInfo.player.bids.length);
+				for (var i = 0; i < gameInfo.player.bids.length; i++) {
+
+				}
+
+			}
+
 			var drawPaperLines = function (context, width, height, numLines, color1, color2) {
 				var lineSeparation = (height - (height/5)) / numLines;
 				for (var i = 0; i < numLines; i++) {
@@ -141,10 +169,6 @@
 
 			var buyUpgrade = function(cost, itemName) {
 				if (money >= cost) {
-					/*
-					money -= cost;
-					moneyRate += benefit;
-					*/
 
 					money -= cost;
 
@@ -187,11 +211,6 @@
 					employeesDiv.innerHTML = "";
 					employeeLevelDepth = 0;
 
-					/*
-					newBossLevel(e1.name);
-					newEmployeeLevel(1, e1.name);
-					newEmployeeLevel(2, e2.name);
-					*/
 					newBossLevel(gameInfo.boss);
 					myBossName = gameInfo.boss.username;
 					newEmployeeLevel(1, gameInfo.boss.username);
@@ -216,14 +235,7 @@
 					url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
 					type: 'post',
 					data: {'UpdateType' : 'NormalUpdate', 'Username' : username},
-					success: function(msg) {
-						//console.log(msg); //returns xml whooo which can be parsed by player.js whoo
-						gameInfo.update(msg);
-
-						money = gameInfo.player.money;
-						//console.log(gameInfo.player.money);
-						moneyRate = parseInt(gameInfo.player.production)
-					},
+					success: defaultUpdate,
 					error: function() {
 						console.log("nope nope nope");
 					}
@@ -286,65 +298,36 @@
 						console.log("nope nope nope");
 					}
 				});
-
-				/*
-				var levelDiv = document.getElementById("employeeLevel" + level.toString());
-				if (levelDiv == null) {
-					document.getElementById("employeesMenu").innerHTML += "<div id='employeeLevel" + level.toString() + "' class='employeeLevel'></div>";
-					levelDiv = document.getElementById("employeeLevel" + level.toString());
-				}
-
-
-				if (level > employeeLevelDepth) {
-					employeeLevelDepth = level;
-				}
-
-				console.log("clear");
-				for (var i = level; i <= employeeLevelDepth; i++) {
-					console.log(i);
-					document.getElementById("employeeLevel" + i.toString()).innerHTML = "";
-				}
-
-				var boss = findEmployeeByName(bossName);
-
-				levelDiv.innerHTML = "";
-				levelDiv.innerHTML += bossName + "'s EMPLOYEES <br/>"
-				for (var i = 0; i < boss.employees.length; i++) {
-					var e = boss.employees[i];
-					levelDiv.innerHTML += e.toHTML(level);
-				}
-
-				if (bossName == myBossName) {
-					levelDiv.style.background = dullBlue.toHTML();
-				}
-				else {
-					if (level % 2 == 0) {
-						levelDiv.style.background = employeeColor1.toHTML();
-					}
-					else {
-						levelDiv.style.background = employeeColor2.toHTML();
-					}
-				}
-				*/
 			}
 
-			/*
-			var newBossLevel = function(bossName, color) {
-				var level = 0;
-				var levelDiv = document.getElementById("employeeLevel" + level.toString());
-				if (levelDiv == null) {
-					document.getElementById("employeesMenu").innerHTML += "<div id='employeeLevel" + (level).toString() + "' class='employeeLevel'></div>";
-					levelDiv = document.getElementById("employeeLevel" + level.toString());
-				}
+			var openEmployeeInfoPopup = function(name) {
+				$.ajax({
+					url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+					type: 'post',
+					data: {'UpdateType' : 'NormalUpdate', 'Username' : name},
+					success: function(msg) {
+						var tmpGameInfo = new GameInfo(name);
+						tmpGameInfo.update(msg);
 
-				var boss = findEmployeeByName(bossName);
+						console.log(tmpGameInfo);
 
-				levelDiv.innerHTML = "";
-				levelDiv.innerHTML += "BOSS <br/>"
-				levelDiv.innerHTML += boss.toHTML(level);
-				levelDiv.style.background = dullRed.toHTML();
+						document.getElementById("employeeInfoPopup").style.display = "block";
+
+						document.getElementById("employeeInfoPopup_Name").innerHTML = name;
+						document.getElementById("employeeInfoPopup_Production").innerHTML = tmpGameInfo.player.production + " " + moneyUnit + " / second";
+						document.getElementById("employeeInfoPopup_EmployeeNum").innerHTML = tmpGameInfo.employees.length + " employees";
+						document.getElementById("employeeInfoPopup_offerBidButton").onclick = function() {
+							offerBidTo(name);
+						};
+						document.getElementById("employeeInfoPopup_acceptBidButton").onclick = function() {
+							acceptBidFrom(name);
+						};
+					},
+					error: function() {
+						console.log("nope nope nope");
+					}
+				});
 			}
-			*/
 
 			var newBossLevel = function(bossInfo, color) {
 				var level = 0;
@@ -382,6 +365,34 @@
 				document.getElementById("emailButton").innerHTML = "Email Inbox (" + unread.toString() + ")";
 			}
 
+			var offerBidTo = function(name) {
+				$.ajax({
+					url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+					type: 'post',
+					data: {'UpdateType' : 'OfferBid', 'Employee' : name, 'BidAmount' : 10}, //placeholder amount = 10
+					success: function(msg) {
+						console.log(msg);
+					},
+					error: function() {
+						console.log("nope nope nope");
+					}
+				});
+			}
+
+			var acceptBidFrom = function(name) {
+				$.ajax({
+					url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+					type: 'post',
+					data: {'UpdateType' : 'AcceptBid', 'Bidder' : name},
+					success: function(msg) {
+						console.log(msg);
+					},
+					error: function() {
+						console.log("nope nope nope");
+					}
+				});
+			}
+
 			//OBJECTS
 			var EmployeeWrapper = function(name, productionRate, boss) {
 				this.name = name;
@@ -403,9 +414,11 @@
 					htmlStr += "<center>";
 					htmlStr += "^<br/>";
 					htmlStr += "|<br/>";
-					htmlStr += "<div class='employeeBox' onclick='newEmployeeLevel(" + (level + 1).toString() + "," + quoteChar + this.name + quoteChar + ", employeeColor1);'>";
+					htmlStr += "<div class='employeeBox'>";
 					htmlStr += this.name + "<br/>";
 					htmlStr += this.productionRate + " " + moneyUnit + " / second <br/>";
+					htmlStr += "<button onclick='openEmployeeInfoPopup(" + quoteChar + this.name + quoteChar + ");'>MORE INFO</button><br/>";
+					htmlStr += "<button onclick='newEmployeeLevel(" + (level + 1).toString() + "," + quoteChar + this.name + quoteChar + ", employeeColor1);'>EMPLOYEES</button><br/>";
 					htmlStr += "</div>";
 					htmlStr += "</center>";
 					htmlStr += "</div>";
@@ -471,18 +484,26 @@
 				font-family: monospace;
 			}
 			#moneyForBoss {
-				font-size: 50px;
+				font-size: 40px;
 				color: #faa;
 			}
 			#money {
-				font-size: 50px;
+				font-size: 40px;
 			}
 			#moneyFromEmployees {
-				font-size: 50px;
+				font-size: 40px;
 				color: #afa;
 			}
+			#moneyRateForBoss {
+				font-size: 20px;
+				color: #faa;
+			}
 			#moneyRate {
-				font-size: 30px;
+				font-size: 20px;
+			}
+			#moneyRateFromEmployees {
+				font-size: 20px;
+				color: #afa;
 			}
 			#menuBar {
 				background: #aaa;
@@ -521,14 +542,14 @@
 				background: #aaa;
 				color: #333;
 				border: 2px solid #333;
-				height: 50px;
+				height: 100px;
 			}
 			#mainContent {
 				height: 60%;
 				margin: 2%;
 			}
 			.employeeLevel {
-				height: 30%;
+				height: 40%;
 				color: #333;
 				overflow: scroll;
 				overflow-y: none;
@@ -539,6 +560,17 @@
 			}
 			#accountInfo {
 				float: right;
+			}
+			#employeeInfoPopup {
+				position: absolute;
+				top: 50%;
+				left: 35%;
+				width: 30%;
+				height: 20%;
+				background-color: #aaa;
+				color: #333;
+				padding: 5px;
+				border: 10px solid #666;
 			}
 		</style>
 	</head>
@@ -554,8 +586,11 @@
 		</div>
 
 		<center>
+			<br/>
+			<br/>
+			<hr/>
 			<div id="moneyForBoss">
-				<center> - 0 moneyz to boss </center>
+				- 0 moneyz to boss
 			</div>
 			<div id="money">
 				0 moneyz
@@ -564,8 +599,14 @@
 				+ 0 moneyz from employees
 			</div>
 			<hr/>
+			<div id="moneyRateForBoss">
+				+ 0 moneyz / second to boss
+			</div>
 			<div id="moneyRate">
 				0 moneyz / second
+			</div>
+			<div id="moneyRateFromEmployees">
+				- 0 moneyz / second from employees
 			</div>
 
 			<div id="menuBar">
@@ -575,7 +616,6 @@
 				<button class="menuButton" id="emailButton" onclick="switchMenu(3);">Email Inbox (0)</button>
 			</div>
 		</center>
-
 
 		<div id="mainContent">
 			<div id="deskMenu">
@@ -595,6 +635,15 @@
 			</div>
 			<div id="emailMenu" style="display:none;">
 			</div>
+		</div>
+
+		<div id="employeeInfoPopup" style="display:none;">
+			<button style="float: right;" onclick="document.getElementById('employeeInfoPopup').style.display = 'none';">[X] CLOSE</button>
+			<b><div id="employeeInfoPopup_Name">Employee Name</div></b>
+			<div id="employeeInfoPopup_Production">X moneyz / second</div>
+			<div id="employeeInfoPopup_EmployeeNum">Y employees</div>
+			<button id="employeeInfoPopup_offerBidButton">OFFER BID</button>
+			<button id="employeeInfoPopup_acceptBidButton">ACCEPT BID</button>
 		</div>
 	</body>
 

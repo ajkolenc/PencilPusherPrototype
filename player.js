@@ -57,7 +57,6 @@ function GameInfo(username){
 	this.boss = new Player("", 0, 0, []);
 	this.employees = [];
 	this.notifications = [];
-	this.bids = [];
 }
 
 GameInfo.prototype.update = function(xml){
