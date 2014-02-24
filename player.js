@@ -1,8 +1,9 @@
-function Player(username, money, production, items){
+function Player(username, money, production, items, tier){
 	this.username = username;
 	this.money = money;
 	this.production = production;
 	this.items = items;
+	this.tier = tier;
 	this.bids = [];
 }
 
@@ -47,18 +48,20 @@ function EmployeeInfo(xml){
 	for (var i = 0; i < employees.childNodes.length; i++){
 		var eName = employees.childNodes[i].getElementsByTagName("name")[0].textContent;
 		var eProd = parseInt(employees.childNodes[i].getElementsByTagName("production")[0].textContent);
-		this.employees.push(new Employee(eName, eProd));
+		var eTier = parseInt(employees.childNodes[i].getElementsByTagName("tier")[0].textContent);
+		this.employees.push(new Employee(eName, eProd, eTier));
 	}
 }
 
-function Employee(name, production){
+function Employee(name, production, tier){
 	this.name = name;
 	this.production = production;
+	this.tier = tier;
 }
 
 function GameInfo(username){
-	this.player = new Player(username, 0, 0, []);
-	this.boss = new Player("", 0, 0, []);
+	this.player = new Player(username, 0, 0, [], 0);
+	this.boss = new Player("", 0, 0, [], 0);
 	this.employees = [];
 	this.notifications = [];
 	this.store = [];
@@ -76,6 +79,8 @@ GameInfo.prototype.update = function(xml){
 
 	this.player.production = parseInt(player.getElementsByTagName("production")[0].textContent);
 	
+	this.player.tier = parseInt(player.getElementsByTagName("tier")[0].textContent);
+
 	this.player.bids = [];
 	var bids = player.getElementsByTagName("bids")[0];
 	for (var i = 0; i < bids.childNodes.length; i++){
@@ -108,8 +113,9 @@ GameInfo.prototype.update = function(xml){
 	
 	var boss = xmlDoc.getElementsByTagName("boss")[0];
 	//this.boss.money = parseInt(boss.getElementsByTagName("money")[0].textContent);
-	this.boss.production = parseInt(boss.getElementsByTagName("production")[0].textContent);
 	this.boss.username = boss.getElementsByTagName("name")[0].textContent;
+	this.boss.production = parseInt(boss.getElementsByTagName("production")[0].textContent);
+	this.boss.tier = parseInt(boss.getElementsByTagName("tier")[0].textContent);
 	items = boss.getElementsByTagName("items")[0];
 	this.boss.items = [];
 	for (var i = 0; i < items.childNodes.length; i++){
@@ -121,7 +127,7 @@ GameInfo.prototype.update = function(xml){
 	this.employees = [];
 	for (var i = 0; i < employees.childNodes.length; i++){
 		var employee = employees.childNodes[i];
-		this.employees.push(new Employee(employee.getElementsByTagName("name")[0].textContent, parseInt(employee.getElementsByTagName("production")[0].textContent)));
+		this.employees.push(new Employee(employee.getElementsByTagName("name")[0].textContent, parseInt(employee.getElementsByTagName("production")[0].textContent), parseInt(employee.getElementsByTagName("tier")[0].textContent)));
 	}
 	
 	var notifications = xmlDoc.getElementsByTagName("notifications");

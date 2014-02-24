@@ -39,6 +39,9 @@
 		case "Interacted":
 			interact();
 			break;
+		case "ResetUser":
+			resetUser();
+			break;
 	}
 	
 	$returnInfo = generate_playerXML();
@@ -53,6 +56,12 @@
 		$bossInfo['Money'] += $moneyEarned / 2;
 		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
 		update_boss($bossInfo['Username'], $bossInfo['Money']);
+	}
+	
+	function resetUser(){
+		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
+		reset_user($username);
+		$userInfo = user_info($username);
 	}
 	
 	function online(){
@@ -96,6 +105,7 @@
 		$userInfo['Boss'] = $bidder;
 		$bossInfo = user_info($bidder);
 		$bossItems = get_equipment($bossInfo['Username']);
+		$userInfo['Tier'] = $bossInfo['Tier'] + 1;
 		
 		new_boss($username, $bidder);
 		notify_user($bossInfo["Username"], $username, 2, "");
@@ -135,7 +145,7 @@
 			$production += get_production($item["Equipment"]) * $item["Quantity"];
 		}
 		foreach ($bossItems as $item){
-			$production += get_production($item) * $item["Quantity"];
+			$production += get_production($item["Equipment"]) * $item["Quantity"];
 		}
 		return $production;
 	}
@@ -188,6 +198,7 @@
 				$xml .= "<employee>";
 				$xml .= "<name>" . $employee["Username"] . "</name>";
 				$xml .= "<production>" . $employee["Production"] . "</production>";
+				$xml .= "<tier>". $employee["Tier"] . "</tier>";
 				$xml .= "</employee>";
 			}
 			$xml .= "</employees>";
@@ -198,6 +209,7 @@
 			$xml .= "<player>";
 			$xml .= "<money>" . $userInfo['Money'] . "</money>";	
 			$xml .= "<production>" . $userInfo['Production'] . "</production>";
+			$xml .= "<tier>" . $userInfo['Tier'] . "</tier>";
 			
 			if ($updateType == "Online" || $updateType == "BoughtItem") {
 				$xml .= "<store>";
@@ -249,6 +261,7 @@
 			$xml .= "<boss>";
 			$xml .= "<name>" . $bossInfo["Username"] . "</name>";
 			$xml .= "<production>" . $bossInfo['Production'] . "</production>";
+			$xml .= "<tier>" . $bossInfo["Tier"] . "</name>";
 			$xml .= "<items>";
 			foreach ($bossItems as $item){
 				$xml .= "<item>";

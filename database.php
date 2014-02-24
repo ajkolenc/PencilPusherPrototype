@@ -1,8 +1,9 @@
 <?php
-	$server = "db512803470.db.1and1.com";
-	$user = "dbo512803470";
+//	$server = "web-db1.gatech.edu";
+	$server = "mysql.localhost";
+	$user = "theboss";
 	$password = "pyramidscheme";
-	$database = "db512803470";
+	$database = "pencil_pusher";
 	
 //	$server = "127.0.0.1";
 //	$user = "root";
@@ -46,9 +47,11 @@
 	}
 	
 	function new_user($username, $password, $money, $production, $boss){
+		$bossInfo = user_info($boss);
+		$tier = $bossInfo['Tier'] + 1;
 		$pass = md5($password);
 		$date = time();
-		$query = "INSERT INTO employees VALUES ('$username','$pass', '$money', '$production','$boss', FROM_UNIXTIME('$date'), '0');";
+		$query = "INSERT INTO employees VALUES ('$username','$pass', '$money', '$production','$boss', FROM_UNIXTIME('$date'), '0', '$tier');";
 		database_query($query);
 	}
 
@@ -77,7 +80,9 @@
 	}
 	
 	function new_boss($username, $boss){
-		$query = "UPDATE employees SET Boss='$boss' WHERE Username='$username';";
+		$bossInfo = user_info($boss);
+		$tier = $bossInfo['Tier'] + 1;
+		$query = "UPDATE employees SET Boss='$boss', Tier='$tier' WHERE Username='$username';";
 		database_query($query);
 	}
 	
@@ -99,6 +104,17 @@
 	
 	function user_offline($username, $timestamp){
 		$query = "UPDATE employees SET LastUpdated=FROM_UNIXTIME('$timestamp'), Online='0' WHERE Username='$username';";
+		database_query($query);
+	}
+
+	function reset_user($username){
+		$info = user_info($username);
+		$pass = $info["Password"];
+		$boss = $info["Boss"];
+		$tier = $info["Tier"];
+		delete_user($username);
+		$date = time();
+		$query = "INSERT INTO employees VALUES ('$username', '$pass', '0', '0', '$boss', FROM_UNIXTIME('$date'), '0', '$tier');";
 		database_query($query);
 	}
 
@@ -124,10 +140,16 @@
 			}
 		}
 		return $arr;
-	}	
+	}
 	
-	function delete_member($username){
+	function delete_user($username){
 		$query = "DELETE FROM employees WHERE Username='$username';";
+		database_query($query);
+		$query = "DELETE FROM employee_bids WHERE Employee='$username';";
+		database_query($query);
+		$query = "DELETE FROM employee_equipment WHERE Username='$username';";
+		database_query($query);
+		$query = "DELETE FROM notifications WHERE Username='$username';";
 		database_query($query);
 	}
 	
