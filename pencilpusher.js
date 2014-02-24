@@ -9,10 +9,13 @@ var employeeLevelDepth = 0;
 var moneyRateForBoss = 0;
 var moneyRateFromEmployees = 0;
 
+var timeUntilEmailIsOld = 5; //seconds
+
 //ajax server communication
 var username = "Test User 1";
 var gameInfo;
 var updateTimer = new ArlEtc.Timer(5);
+var hasNewNotification = false;
 
 //text
 var moneyUnit = "$$$";
@@ -22,9 +25,9 @@ var myName = "ME";
 var myBossName = "MY BOSS";
 
 //graphics
-var dullRed = new ArlDraw.Color(200,100,100,1);
-var dullBlue = new ArlDraw.Color(100,100,200,1);
-var dullGreen = new ArlDraw.Color(100,200,100,1);
+var dullRed = new ArlDraw.Color(200,150,150,1);
+var dullBlue = new ArlDraw.Color(150,150,200,1);
+var dullGreen = new ArlDraw.Color(150,200,150,1);
 var darkGrey = new ArlDraw.Color(50,50,50,1);
 var employeeColor1 = new ArlDraw.Color(200,200,200,1);
 var employeeColor2 = new ArlDraw.Color(150,150,150,1);
@@ -57,7 +60,7 @@ ArlGame.events.onCursorMove = function() {
 			scribbleList = [];
 
 			$.ajax({
-				url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+				url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 				type: 'post',
 				data: {'UpdateType' : 'Interacted', 'Username' : name},
 				success: function(msg) {
@@ -106,7 +109,7 @@ ArlGame.events.mainLoop = function() {
 
 	if (updateTimer.isDone()) {
 		$.ajax({
-			url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+			url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 			type: 'post',
 			data: {'UpdateType' : 'NormalUpdate', 'Username' : username},
 			success: defaultUpdate,
@@ -121,6 +124,26 @@ ArlGame.events.mainLoop = function() {
 	ArlDraw.drawPath(ArlGame.context, scribbleList, 2, darkGrey);
 
 	updateEmailButton();
+
+	var hasOldNotification = false;
+	if (menuIndex == 0) {
+		for (var i = notificationList.length-1; i >= 0; i--) {
+			if (notificationList[i].update()) {
+				hasOldNotification = true;
+			}
+		}
+	}
+
+	if (hasNewNotification || hasOldNotification){
+		var notificationDiv = document.getElementById("emailMenu2");
+		notificationDiv.innerHTML = "";
+		for (var i = notificationList.length-1; i >= 0; i--) {
+			notificationDiv.innerHTML += notificationList[i].toHTML();
+		}
+		hasNewNotification = false;
+	}
+
+	
 };
 
 //FUNCTIONS
@@ -144,6 +167,7 @@ var defaultUpdate = function(msg) {
 	for (var i = 0; i < gameInfo.notifications.length; i++) {
 		var m = new Message(gameInfo.notifications[i].sender + ": " + gameInfo.notifications[i].message);
 		notificationList.push(m);
+		hasNewNotification = true;
 		if (gameInfo.notifications[i].message == "You have a new job offer!") {
 			for (var j = 0; j < gameInfo.player.bids.length; j++) {
 				if (gameInfo.player.bids[j].sender == gameInfo.notifications[i].sender) {
@@ -171,7 +195,7 @@ var buyUpgrade = function(cost, itemName) {
 		money -= cost;
 
 		$.ajax({
-			url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+			url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 			type: 'post',
 			data: {'UpdateType' : 'BoughtItem', 'Username' : username, 'NewItem' : itemName},
 			success: function(msg) {
@@ -230,7 +254,7 @@ var switchUser = function(newUsername) {
 	document.getElementById("usernameOutput").innerHTML = "USER: " + username;
 
 	$.ajax({
-		url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 		type: 'post',
 		data: {'UpdateType' : 'NormalUpdate', 'Username' : username},
 		success: defaultUpdate,
@@ -245,7 +269,7 @@ var newEmployeeLevel = function(level, bossName, color) {
 	console.log(employeeLevelDepth);
 
 	$.ajax({
-		url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 		type: 'post',
 		data: {'UpdateType' : 'EmployeeInfo', 'Employee' : bossName},
 		success: function(msg) {
@@ -300,7 +324,7 @@ var newEmployeeLevel = function(level, bossName, color) {
 
 var openEmployeeInfoPopup = function(name) {
 	$.ajax({
-		url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 		type: 'post',
 		data: {'UpdateType' : 'NormalUpdate', 'Username' : name},
 		success: function(msg) {
@@ -381,12 +405,13 @@ var updateEmailButton = function() {
 			unread++;
 		}
 	}
-	document.getElementById("emailButton").innerHTML = "Email Inbox (" + unread.toString() + ")";
+	//document.getElementById("emailButton").innerHTML = "Email Inbox (" + unread.toString() + ")";
+	document.getElementById("deskButton").innerHTML = "My Desk (" + unread.toString() + ")";
 }
 
 var offerBidTo = function(name) {
 	$.ajax({
-		url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 		type: 'post',
 		data: {'UpdateType' : 'OfferBid', 'Username' : username, 'Employee' : name, 'BidAmount' : 10}, //placeholder amount = 10
 		success: function(msg) {
@@ -400,7 +425,7 @@ var offerBidTo = function(name) {
 
 var acceptBidFrom = function(name) {
 	$.ajax({
-		url: 'http://www.ajkolenc.com/PencilPusher/gameLogic.php',
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 		type: 'post',
 		data: {'UpdateType' : 'AcceptBid', 'Username' : username, 'Bidder' : name},
 		success: function(msg) {
@@ -452,6 +477,9 @@ var Message = function(message) {
 
 	this.hasBid = false;
 	this.bidder = "";
+
+	//this.oldnessTimer = new ArlEtc.Timer(timeUntilEmailIsOld);
+	this.oldnessTimer = null;
 };
 Message.prototype = {
 	toHTML: function(color) {
@@ -476,5 +504,18 @@ Message.prototype = {
 	setBid: function(bidder) {
 		this.bidder = bidder;
 		this.hasBid = true;
+	},
+	update: function() {
+		if (this.oldnessTimer == null) {
+			this.oldnessTimer = new ArlEtc.Timer(timeUntilEmailIsOld);
+		}
+
+		if (!this.isRead) {
+			if (this.oldnessTimer.isDone()) {
+				this.isRead = true;
+			}
+			return this.isRead;
+		}
+		return false;
 	}
 };

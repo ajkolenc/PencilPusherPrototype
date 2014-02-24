@@ -2,6 +2,46 @@ body {
 	background: #444;
 	color: #aaa;
 	font-family: monospace;
+	padding: 0%;
+	margin: 0%;
+	width: 100%;
+}
+#topBar {
+	background: #555;
+	color: #888;
+	height: 50px;
+	width: 100%;
+}
+#accountInfo {
+	float: right;
+}
+#menuBar {
+	background: #666;
+	width: 100%;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+#mainContent {
+	height: 60%;
+	margin: 2%;
+}
+#emailMenu2 {
+	width: 42%;
+	background: #0f0;
+	margin-left: 22%;
+	margin-top: 32px;
+	position: absolute;
+}
+#emailTitle {
+	margin-left: 22%;
+	font-size: 30px;
+	position: absolute;
+}
+#shop {
+	float: right;
+	width: 30%;
+	font-size: 30px;
+	position: relative;
 }
 #money {
 	font-size: 60px;
@@ -24,9 +64,6 @@ body {
 	float: right;
 	color: #ddd;
 }
-#menuBar {
-	background: #aaa;
-}
 button {
 	color: #333;
 	background: #ccc;
@@ -48,11 +85,6 @@ button:hover {
 	width: 20%;
 	float: left;
 }
-#shop {
-	float: right;
-	width: 30%;
-	font-size: 30px;
-}
 .employeeBoxWrapper {
 	width: 150px;
 	margin-left: 10px;
@@ -63,10 +95,6 @@ button:hover {
 	border: 2px solid #333;
 	height: 100px;
 }
-#mainContent {
-	height: 60%;
-	margin: 2%;
-}
 .employeeLevel {
 	height: 40%;
 	color: #333;
@@ -76,9 +104,6 @@ button:hover {
 .notification {
 	color: #333;
 	border: 1px solid #666;
-}
-#accountInfo {
-	float: right;
 }
 #employeeInfoPopup {
 	position: absolute;

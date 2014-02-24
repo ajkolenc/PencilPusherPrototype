@@ -20,18 +20,18 @@
 	</head>
 
 	<body onload="ArlGame.init()" onresize="ArlGame.resize()">
-		PENCIL PUSHER
-		<div id = "accountInfo">
-			<div id="usernameOutput">
-				USER: USERNAME
+		<div id = "topBar">
+			PENCIL PUSHER
+			<div id = "accountInfo">
+				<div id="usernameOutput">
+					USER: USERNAME
+				</div>
+				<input id="usernameInput" type="text" placeholder="User Name"></input>
+				<button onclick="switchUser(document.getElementById('usernameInput').value);"> LOGIN </button>
 			</div>
-			<input id="usernameInput" type="text" placeholder="User Name"></input>
-			<button onclick="switchUser(document.getElementById('usernameInput').value);"> LOGIN </button>
 		</div>
 
 		<center>
-			<br/>
-			<br/>
 			<div id="money">
 				0 moneyz
 			</div>
@@ -53,9 +53,13 @@
 
 			<div id="menuBar">
 				<button class="menuButton" id="deskButton" onclick="switchMenu(0);">My Desk</button>
+				<!--
 				<button class="menuButton" id="officeButton" onclick="switchMenu(1);">My Office</button>
+				-->
 				<button class="menuButton" id="employeesButton" onclick="switchMenu(2);">Organizational Chart</button>
+				<!--
 				<button class="menuButton" id="emailButton" onclick="switchMenu(3);">Email Inbox (0)</button>
+				-->
 			</div>
 		</center>
 
@@ -63,6 +67,11 @@
 			<div id="deskMenu">
 				<canvas id="ArlGameCanvas">
 				</canvas>
+				<div id="emailTitle">
+					E-MAIL
+				</div>
+				<div id="emailMenu2">
+				</div>
 				<div id="shop">
 					OFFICE SUPPLIES
 					<br/>
@@ -75,8 +84,10 @@
 			</div>
 			<div id="employeesMenu" style="display:none;">
 			</div>
+			<!--
 			<div id="emailMenu" style="display:none;">
 			</div>
+			-->
 		</div>
 
 		<div id="employeeInfoPopup" style="display:none;">
