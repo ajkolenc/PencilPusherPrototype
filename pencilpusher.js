@@ -18,7 +18,8 @@ var updateTimer = new ArlEtc.Timer(5);
 var hasNewNotification = false;
 
 //text
-var moneyUnit = "$$$";
+var moneyUnit = "$";
+var unitPerSecond = moneyUnit + " / s";
 var quoteChar = '"';
 var quoteChar_Single = "'";
 var myName = "ME";
@@ -93,13 +94,13 @@ ArlGame.events.mainLoop = function() {
 	document.getElementById("money").innerHTML = curMoney + " " + moneyUnit;
 	document.title = curMoney;
 
-	document.getElementById("moneyRate").innerHTML = "my production: + " + moneyRate + " " + moneyUnit + " / second";
+	document.getElementById("moneyRate").innerHTML = "my production: + " + moneyRate + " " + unitPerSecond + "<br/>";
 
-	document.getElementById("moneyRateForBoss").innerHTML = "to boss: - " + moneyRateForBoss + " " + moneyUnit + " / second";
-	document.getElementById("moneyRateFromEmployees").innerHTML = "from employees: + " + moneyRateFromEmployees + " " + moneyUnit + " / second";
+	document.getElementById("moneyRateForBoss").innerHTML = "to boss: - " + moneyRateForBoss + " " + unitPerSecond + "<br/>";
+	document.getElementById("moneyRateFromEmployees").innerHTML = "from employees: + " + moneyRateFromEmployees + " " + unitPerSecond + "<br/>";
 
 	var totalMoneyRate = moneyRate - moneyRateForBoss + moneyRateFromEmployees;
-	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL : " + totalMoneyRate + " " + moneyUnit + " / second";
+	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL : " + totalMoneyRate + " " + unitPerSecond;
 
 	if (moneyTimer.isDone()) {
 		money += realMoneyRate;
@@ -336,7 +337,7 @@ var openEmployeeInfoPopup = function(name) {
 			document.getElementById("employeeInfoPopup").style.display = "block";
 
 			document.getElementById("employeeInfoPopup_Name").innerHTML = name;
-			document.getElementById("employeeInfoPopup_Production").innerHTML = tmpGameInfo.player.production + " " + moneyUnit + " / second";
+			document.getElementById("employeeInfoPopup_Production").innerHTML = tmpGameInfo.player.production + " " + unitPerSecond;
 			document.getElementById("employeeInfoPopup_EmployeeNum").innerHTML = tmpGameInfo.employees.length + " employees";
 			document.getElementById("employeeInfoPopup_offerBidButton").onclick = function() {
 				offerBidTo(name);
@@ -460,7 +461,7 @@ EmployeeWrapper.prototype = {
 		htmlStr += "|<br/>";
 		htmlStr += "<div class='employeeBox'>";
 		htmlStr += this.name + "<br/>";
-		htmlStr += this.productionRate + " " + moneyUnit + " / second <br/>";
+		htmlStr += this.productionRate + " " + unitPerSecond + "<br/>";
 		htmlStr += "<button onclick='openEmployeeInfoPopup(" + quoteChar + this.name + quoteChar + ");'>MORE INFO</button><br/>";
 		htmlStr += "<button onclick='newEmployeeLevel(" + (level + 1).toString() + "," + quoteChar + this.name + quoteChar + ", employeeColor1);'>EMPLOYEES</button><br/>";
 		htmlStr += "</div>";
