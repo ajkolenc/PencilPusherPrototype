@@ -254,6 +254,7 @@
 				$xml .= "<employee>";
 				$xml .= "<name>" . $employee['Username'] . "</name>";
 				$xml .= "<production>" . $employee['Production'] . "</production>";
+				$xml .= "<tier>" . $employee["Tier"] . "</tier>";
 				$xml .= "</employee>";
 			}
 			$xml .= "</employees>";
@@ -261,7 +262,7 @@
 			$xml .= "<boss>";
 			$xml .= "<name>" . $bossInfo["Username"] . "</name>";
 			$xml .= "<production>" . $bossInfo['Production'] . "</production>";
-			$xml .= "<tier>" . $bossInfo["Tier"] . "</name>";
+			$xml .= "<tier>" . $bossInfo["Tier"] . "</tier>";
 			$xml .= "<items>";
 			foreach ($bossItems as $item){
 				$xml .= "<item>";
