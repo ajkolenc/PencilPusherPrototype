@@ -94,10 +94,10 @@ ArlGame.events.mainLoop = function() {
 	document.getElementById("money").innerHTML = curMoney + " " + moneyUnit;
 	document.title = curMoney;
 
-	document.getElementById("moneyRate").innerHTML = "my production: + " + moneyRate + " " + unitPerSecond + "<br/>";
+	document.getElementById("moneyRate").innerHTML = "my production: + " + moneyRate + " " + unitPerSecond;
 
-	document.getElementById("moneyRateForBoss").innerHTML = "to boss: - " + moneyRateForBoss + " " + unitPerSecond + "<br/>";
-	document.getElementById("moneyRateFromEmployees").innerHTML = "from employees: + " + moneyRateFromEmployees + " " + unitPerSecond + "<br/>";
+	document.getElementById("moneyRateForBoss").innerHTML = "to boss: - " + moneyRateForBoss + " " + unitPerSecond;
+	document.getElementById("moneyRateFromEmployees").innerHTML = "from employees: + " + moneyRateFromEmployees + " " + unitPerSecond;
 
 	var totalMoneyRate = moneyRate - moneyRateForBoss + moneyRateFromEmployees;
 	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL : " + totalMoneyRate + " " + unitPerSecond;
