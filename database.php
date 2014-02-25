@@ -91,8 +91,8 @@
 		database_query($query);	
 	}
 	
-	function update_boss($username, $money){
-		$query = "UPDATE employees SET Money='$money' WHERE Username='$username';";
+	function update_boss($username, $money, $production){
+		$query = "UPDATE employees SET Money='$money', Production='$production' WHERE Username='$username';";
 		database_query($query);	
 	}
 	

@@ -50,12 +50,26 @@
 	function normal_update(){
 		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
 		$updateTime = time() - strtotime($userInfo["LastUpdated"]);
-		$userInfo['Production'] = calculate_production();
+
+		// If you boss is offline, subtract out what was previously your production from his
+		if ($bossInfo["Online"] == 0){
+			$bossInfo["Production"] -= $userInfo["Production"] / 2.0;
+		}
+		$userInfo['Production'] = calculate_production() + employee_production();
+
+		// Add back in your new production so his production is accurate, even though he is offline
+		if ($bossInfo["Online"] == 0){
+			$bossInfo["Production"] += $userInfo["Production"] / 2.0;
+		}
 		$moneyEarned = $userInfo['Production'] * $updateTime;
-		$userInfo['Money'] += $moneyEarned / 2;
-		$bossInfo['Money'] += $moneyEarned / 2;
+		$userInfo['Money'] += $moneyEarned / 2.0;
+		
+		// He can't get the money himself, so you give it to him
+		if ($bossInfo["Online"] == 0){
+			$userInfo['Money'] += $moneyEarned / 2.0;
+		}
 		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
-		update_boss($bossInfo['Username'], $bossInfo['Money']);
+		update_boss($bossInfo['Username'], $bossInfo['Money'], $bossInfo["Production"]);
 	}
 	
 	function resetUser(){
@@ -65,14 +79,28 @@
 	}
 	
 	function online(){
-		global $username;
+		global $username, $userInfo, $bossInfo;
+		$userInfo["Online"] = 1;
 		user_online($username, time());
+		$userInfo['Production'] = calculate_production() + employee_production();
+		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
+		// If your boss is offline, you need to add your production into his so his is accurate
+		if ($bossInfo["Online"] == 0){
+			$bossInfo["Production"] += (calculate_production() + employee_production) / 2.0;
+		}
+		update_boss($bossInfo['Username'], $bossInfo['Money'], $bossInfo["Production"]);
 	}
 	
 	function offline(){
-		global $username;
+		global $username, $userInfo, $bossInfo;
 		normal_update();
 		user_offline($username, time());
+		
+		// If your boss is offline, you need to remove your contribution to his production because he can't (and it needs to remain accurate)
+		if ($bossInfo["Online"] == 0){
+			$bossInfo["Production"] -= (calculate_production() + employee_production) / 2.0;
+		}		
+		update_boss($bossInfo['Username'], $bossInfo['Money'], $bossInfo["Production"]);
 	}
 	
 	function interact(){
@@ -141,12 +169,25 @@
 	function calculate_production(){
 		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
 		$production = 0;
-		foreach ($userItems as $item){
-			$production += get_production($item["Equipment"]) * $item["Quantity"];
+		if ($userInfo["Online"] > 0){
+			foreach ($userItems as $item){
+				$production += get_production($item["Equipment"]) * $item["Quantity"];
+			}
+			foreach ($bossItems as $item){
+				$production += get_production($item["Equipment"]) * $item["Quantity"];
+			}
 		}
-		foreach ($bossItems as $item){
-			$production += get_production($item["Equipment"]) * $item["Quantity"];
-		}
+		return $production;
+	}
+	
+	function employee_production(){
+		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
+		$production = 0;
+		foreach ($employeeInfo as $employee){
+			if ($employee["Online"] > 0){
+				$production += get_production($item["Equipment"]) * $item["Quantity"];
+			}
+		}	
 		return $production;
 	}
 	
