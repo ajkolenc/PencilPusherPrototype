@@ -80,8 +80,8 @@
 	
 	function online(){
 		global $username, $userInfo, $bossInfo;
-		$userInfo["Online"] = 1;
 		user_online($username, time());
+		$userInfo["Online"] = 1;
 		$userInfo['Production'] = calculate_production() + employee_production();
 		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
 		// If your boss is offline, you need to add your production into his so his is accurate
@@ -95,6 +95,9 @@
 		global $username, $userInfo, $bossInfo;
 		normal_update();
 		user_offline($username, time());
+		$userInfo["Online"] = 0;
+		$userInfo['Production'] = calculate_production() + employee_production();
+		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
 		
 		// If your boss is offline, you need to remove your contribution to his production because he can't (and it needs to remain accurate)
 		if ($bossInfo["Online"] == 0){
