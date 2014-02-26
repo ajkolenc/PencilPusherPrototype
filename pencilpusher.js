@@ -78,7 +78,7 @@ ArlGame.events.onCursorMove = function() {
 			$.ajax({
 				url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 				type: 'post',
-				data: {'UpdateType' : 'Interacted', 'Username' : name},
+				data: {'UpdateType' : 'Interacted', 'Username' : username},
 				success: function(msg) {
 					console.log(msg);
 				},
