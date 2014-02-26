@@ -9,7 +9,7 @@ var employeeLevelDepth = 0;
 var moneyRateForBoss = 0;
 var moneyRateFromEmployees = 0;
 
-var timeUntilEmailIsOld = 5; //seconds
+var timeUntilEmailIsOld = 10; //seconds
 
 //ajax server communication
 var username = "Test User 1";
@@ -19,7 +19,7 @@ var hasNewNotification = false;
 
 //text
 var moneyUnit = "$";
-var unitPerSecond = moneyUnit + " / s";
+var unitPerSecond = moneyUnit + "/s";
 var quoteChar = '"';
 var quoteChar_Single = "'";
 var myName = "ME";
@@ -42,6 +42,21 @@ var employeeList = [];
 var notificationList = [];
 
 //EVENTS
+window.onbeforeunload = function (e) { //EXIT WINDOW
+	//log off
+	$.ajax({
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
+		type: 'post',
+		data: {'UpdateType' : 'Offline', 'Username' : username},
+		success: function(msg) {
+			console.log("log off successful");
+		},
+		error: function() {
+			console.log("log off failed");
+		}
+	});
+};
+
 ArlGame.events.resize = function() {
 	//number of pixels inside the canvas should match the number of pixels it takes up on the screen
 	ArlGame.gameCanvas.width = ArlGame.gameCanvas.scrollWidth;
@@ -94,13 +109,13 @@ ArlGame.events.mainLoop = function() {
 	document.getElementById("money").innerHTML = curMoney + " " + moneyUnit;
 	document.title = curMoney;
 
-	document.getElementById("moneyRate").innerHTML = "my production: + " + moneyRate + " " + unitPerSecond;
+	document.getElementById("moneyRate").innerHTML = "my production: " + moneyRate + " " + unitPerSecond;
 
 	document.getElementById("moneyRateForBoss").innerHTML = "to boss: - " + moneyRateForBoss + " " + unitPerSecond;
 	document.getElementById("moneyRateFromEmployees").innerHTML = "from employees: + " + moneyRateFromEmployees + " " + unitPerSecond;
 
 	var totalMoneyRate = moneyRate - moneyRateForBoss + moneyRateFromEmployees;
-	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL : " + totalMoneyRate + " " + unitPerSecond;
+	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL: " + totalMoneyRate + " " + unitPerSecond;
 
 	if (moneyTimer.isDone()) {
 		money += realMoneyRate;
@@ -250,10 +265,45 @@ var switchMenu = function(index) {
 }
 
 var switchUser = function(newUsername) {
+	//log off
+	$.ajax({
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
+		type: 'post',
+		data: {'UpdateType' : 'Offline', 'Username' : username},
+		success: function(msg) {
+			console.log("log off successful");
+		},
+		error: function() {
+			console.log("log off failed");
+		}
+	});
+
+	//log on
+	$.ajax({
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
+		type: 'post',
+		data: {'UpdateType' : 'Online', 'Username' : newUsername},
+		success: function(msg) {
+			console.log("log on successful");
+			username = newUsername;
+			gameInfo = new GameInfo(username);
+			document.getElementById("usernameOutput").innerHTML = "USER: " + username;
+
+			defaultUpdate(msg);
+		},
+		error: function() {
+			console.log("log on failed");
+		}
+	});
+
+
+	/*
 	username = newUsername;
 	gameInfo = new GameInfo(username);
 	document.getElementById("usernameOutput").innerHTML = "USER: " + username;
+	*/
 
+	/*
 	$.ajax({
 		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 		type: 'post',
@@ -263,6 +313,7 @@ var switchUser = function(newUsername) {
 			console.log("nope nope nope");
 		}
 	});
+	*/
 }
 
 var newEmployeeLevel = function(level, bossName, color) {
