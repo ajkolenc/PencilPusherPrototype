@@ -102,7 +102,8 @@ ArlGame.events.init = function() {
 ArlGame.events.mainLoop = function() {
 	ArlDraw.clearCanvas(ArlGame.gameCanvas);
 
-	var realMoneyRate = moneyRate * 0.5;
+	var totalMoneyRate = moneyRate - moneyRateForBoss + moneyRateFromEmployees;
+	var realMoneyRate = totalMoneyRate;
 
 	var curMoney = Math.floor(money + (realMoneyRate * moneyTimer.percentDone()));	
 
@@ -114,7 +115,6 @@ ArlGame.events.mainLoop = function() {
 	document.getElementById("moneyRateForBoss").innerHTML = "to boss: - " + moneyRateForBoss + " " + unitPerSecond;
 	document.getElementById("moneyRateFromEmployees").innerHTML = "from employees: + " + moneyRateFromEmployees + " " + unitPerSecond;
 
-	var totalMoneyRate = moneyRate - moneyRateForBoss + moneyRateFromEmployees;
 	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL: " + totalMoneyRate + " " + unitPerSecond;
 
 	if (moneyTimer.isDone()) {
@@ -172,13 +172,13 @@ var defaultUpdate = function(msg) {
 
 	money = gameInfo.player.money;
 	//console.log(gameInfo.player.money);
-	moneyRate = parseInt(gameInfo.player.production)
+	moneyRate = parseFloat(gameInfo.player.production)
 	moneyRateForBoss = moneyRate / 2;
 	moneyRateFromEmployees = 0;
 	for (var i = 0; i < gameInfo.employees.length; i++) {
 		moneyRateFromEmployees += gameInfo.employees[i].production / 2;
 	}
-
+	moneyRate -= moneyRateFromEmployees;
 	//notifications
 	for (var i = 0; i < gameInfo.notifications.length; i++) {
 		var m = new Message(gameInfo.notifications[i].sender + ": " + gameInfo.notifications[i].message);

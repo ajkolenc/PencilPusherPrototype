@@ -188,10 +188,13 @@
 		$production = 0;
 		foreach ($employeeInfo as $employee){
 			if ($employee["Online"] > 0){
-				$production += get_production($item["Equipment"]) * $item["Quantity"];
+				$employeeItems = get_equipment($employee["Username"]);
+				foreach ($employeeItems as $item){
+					$production += get_production($item["Equipment"]) * $item["Quantity"];
+				}
 			}
 		}	
-		return $production;
+		return $production / 2.0;
 	}
 	
 	function get_production($item){
