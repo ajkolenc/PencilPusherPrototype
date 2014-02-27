@@ -91,6 +91,7 @@ var ArlGame = new (function() {
 	this.init = function() {
 		//grab the canvas and context
 		library.gameCanvas = document.getElementById(library.canvasId);
+		//library.findCanvas();
 		library.context = library.gameCanvas.getContext("2d");
 
 		//if this is a touchscreen object, use touch events; otherwise, mouse events
@@ -116,6 +117,24 @@ var ArlGame = new (function() {
 		library.then = Date.now();
 		setInterval(library.mainLoop,1);
 	};
+
+	this.findCanvas = function() {
+		library.gameCanvas = document.getElementById(library.canvasId);
+		library.context = library.gameCanvas.getContext("2d");
+		//if this is a touchscreen object, use touch events; otherwise, mouse events
+		var supportsTouch = (typeof Touch == "object");
+		if (supportsTouch) {	
+			//set touch listeners
+			library.gameCanvas.addEventListener("touchstart", library.onCursorDown);
+			library.gameCanvas.addEventListener("touchmove", library.onCursorMove);
+			library.gameCanvas.addEventListener("touchend", library.onCursorUp);
+		} else {
+			//set mouse listeners
+			library.gameCanvas.addEventListener("mousedown", library.onCursorDown);
+			library.gameCanvas.addEventListener("mousemove", library.onCursorMove);
+			library.gameCanvas.addEventListener("mouseup", library.onCursorUp);
+		}
+	}
 
 	//the main loop
 	this.mainLoop = function() {
