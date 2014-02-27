@@ -36,6 +36,8 @@ var emailUnread = new ArlDraw.Color(230,230,230,1);
 var emailRead = new ArlDraw.Color(120,120,120,1);
 var scribbleList = [];
 var maxScribbleLength = 800;
+var flyingDivNum = 0;
+var flyingDivs = [];
 
 //data
 var employeeList = [];
@@ -74,6 +76,11 @@ ArlGame.events.onCursorMove = function() {
 		if (ArlMath.pathLength(scribbleList) > maxScribbleLength) {
 			money++;
 			scribbleList = [];
+
+			var f = new FlyingDiv(50 + (Math.random() * 100), 400, 30, dullGreen, 150, 2, "+1$");
+			flyingDivs.push(f);
+			console.log(flyingDivNum);
+			console.log(flyingDivs);
 
 			$.ajax({
 				url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
@@ -159,10 +166,45 @@ ArlGame.events.mainLoop = function() {
 		hasNewNotification = false;
 	}
 
-	
+	for (var i = 0; i < flyingDivs.length; i++) {
+		flyingDivs[i].update();
+	}
 };
 
 //FUNCTIONS
+var resetUserAccount = function() {
+	$.ajax({
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
+		type: 'post',
+		data: {'UpdateType' : 'Reset', 'Username' : username},
+		success: function(msg) {
+			console.log(msg);
+			console.log("reset successful"); //not actually working for some reason
+		},
+		error: function() {
+			console.log("reset failed");
+		}
+	});
+}
+
+var updateStore = function() {
+	var storeDiv = document.getElementById("shop");
+	storeDiv.innerHTML = "";
+
+	for (var i = 0; i < gameInfo.store.length; i++) {
+		var item = gameInfo.store[i];
+
+		storeDiv.innerHTML += "<div class='itemName'>" + item.name + "</div>";
+		storeDiv.innerHTML += "x" + item.quantity.toString() + " (" + item.production.toString() + " " + unitPerSecond + ") <br/>";
+		storeDiv.innerHTML += "<button onclick='buyUpgrade(" + item.cost.toString() + 
+			"," + quote(item.name) + ");'>Buy (" + item.cost.toString() + moneyUnit + ")</button>" + "<br/><br/>";
+	}
+}
+
+var quote = function(str) {
+	return quoteChar + str + quoteChar;
+}
+
 var defaultUpdate = function(msg) {
 	//console.log(msg); //returns xml whooo which can be parsed by player.js whoo
 
@@ -189,6 +231,7 @@ var defaultUpdate = function(msg) {
 				if (gameInfo.player.bids[j].sender == gameInfo.notifications[i].sender) {
 					//console.log("BIDDD");
 					//console.log(gameInfo.player.bids[j]);
+					m.message += "(Offer: " + gameInfo.player.bids[j].amount + moneyUnit + ") "
 					m.setBid(gameInfo.player.bids[j].sender);
 				}
 			}
@@ -221,6 +264,11 @@ var buyUpgrade = function(cost, itemName) {
 				money = gameInfo.player.money;
 				//console.log(gameInfo.player.money);
 				moneyRate = parseInt(gameInfo.player.production)
+
+				var f = new FlyingDiv(250 + (Math.random() * 100), 200, 30, dullRed, 150, 2, "-" + cost + "$");
+			flyingDivs.push(f);
+
+				updateStore();
 			},
 			error: function() {
 				console.log("nope nope nope");
@@ -290,6 +338,8 @@ var switchUser = function(newUsername) {
 			document.getElementById("usernameOutput").innerHTML = "USER: " + username;
 
 			defaultUpdate(msg);
+
+			updateStore();
 		},
 		error: function() {
 			console.log("log on failed");
@@ -465,9 +515,16 @@ var offerBidTo = function(name) {
 	$.ajax({
 		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
 		type: 'post',
-		data: {'UpdateType' : 'OfferBid', 'Username' : username, 'Employee' : name, 'BidAmount' : 10}, //placeholder amount = 10
+		data: {'UpdateType' : 'OfferBid', 'Username' : username, 'Employee' : name, 'BidAmount' : parseFloat(document.getElementById('employeeInfoPopup_bidInput').value)}, //placeholder amount = 10
 		success: function(msg) {
 			console.log(msg);
+
+			var f = new FlyingDiv(250 + (Math.random() * 100), 200, 30, dullRed, 150, 2, "-" + document.getElementById('employeeInfoPopup_bidInput').value + "$");
+			flyingDivs.push(f);
+
+			console.log(f);
+
+			document.getElementById('employeeInfoPopup_bidInput').value = null;
 		},
 		error: function() {
 			console.log("nope nope nope");
@@ -569,5 +626,33 @@ Message.prototype = {
 			return this.isRead;
 		}
 		return false;
+	}
+};
+
+var FlyingDiv = function(x, y, size, color, distance, time, string) {
+	this.x = x;
+	this.y = y;
+	this.distance = distance;
+	this.color = color;
+	this.timer = new ArlEtc.Timer(time);
+	this.ID = flyingDivNum;
+
+	this.div = document.createElement("div");
+	this.div.style.position = "absolute";
+	this.div.style.marginLeft = x.toString() + "px";
+	this.div.style.marginTop = y.toString() + "px";
+	this.div.style.fontSize = size.toString() + "px";
+	this.div.style.color = color.toHTML();
+	this.div.innerHTML = string;
+
+	document.body.insertBefore(this.div, document.body.childNodes[0]);
+};
+FlyingDiv.prototype = {
+	update: function() {
+		var curY = this.y - (this.distance * this.timer.percentDone());
+		this.color.a = 1 - this.timer.percentDone();
+
+		this.div.style.marginTop = curY.toString() + "px";
+		this.div.style.color = this.color.toHTML();
 	}
 };
