@@ -4,6 +4,70 @@
 		"selected_items":
 		[
 			[
+				"flying",
+				"flyingDivNum"
+			],
+			[
+				"flyingD",
+				"flyingDivs"
+			],
+			[
+				"flyin",
+				"flyingDivNum"
+			],
+			[
+				"mon",
+				"moneyRate"
+			],
+			[
+				"upda",
+				"updateStore"
+			],
+			[
+				"font",
+				"font-size"
+			],
+			[
+				"mone",
+				"moneyUnit"
+			],
+			[
+				"quo",
+				"quoteChar"
+			],
+			[
+				"qu",
+				"quoteChar_Single"
+			],
+			[
+				"succes",
+				"successful"
+			],
+			[
+				"bac",
+				"background"
+			],
+			[
+				"moneyRate",
+				"moneyRateForBoss"
+			],
+			[
+				"suppli",
+				"employeeInfoPopup_OfficeSupplies"
+			],
+			[
+				"get",
+				"getElementById"
+			],
+			[
+				"not",
+				"notifications"
+			],
+			[
+				"notifi",
+				"notificationList"
+			],
+			[
 				"acc",
 				"acceptBidFrom"
 			],
@@ -38,10 +102,6 @@
 			[
 				"moneyRateF",
 				"moneyRateFromEmployees"
-			],
-			[
-				"moneyRate",
-				"moneyRateToBoss"
 			],
 			[
 				"moneyR",
@@ -454,66 +514,6 @@
 			[
 				"sh",
 				"shrink"
-			],
-			[
-				"Plan",
-				"PlanetTrailArray"
-			],
-			[
-				"PlanetTr",
-				"PlanetTrailArray"
-			],
-			[
-				"Tu",
-				"TutorialMessages"
-			],
-			[
-				"font",
-				"fontsize"
-			],
-			[
-				"le",
-				"length"
-			],
-			[
-				"l",
-				"length"
-			],
-			[
-				"Tutorial",
-				"TutorialMessages"
-			],
-			[
-				"tu",
-				"tutorialDiv"
-			],
-			[
-				"Get",
-				"getElementById"
-			],
-			[
-				"Star",
-				"StartThrow"
-			],
-			[
-				"St",
-				"StartThrow"
-			],
-			[
-				"tim",
-				"timerLength"
-			],
-			[
-				"sta",
-				"startTime"
-			],
-			[
-				"s",
-				"sans-serif"
-			],
-			[
-				"disp",
-				"displacementFromCenter"
 			]
 		]
 	},
@@ -523,15 +523,15 @@
 			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 19202,
+				"buffer_size": 3127,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "gameLogic.php",
+			"file": "pencilpusher.css",
 			"settings":
 			{
-				"buffer_size": 7668,
+				"buffer_size": 1909,
 				"line_ending": "Unix"
 			}
 		},
@@ -539,7 +539,31 @@
 			"file": "player.js",
 			"settings":
 			{
-				"buffer_size": 4140,
+				"buffer_size": 5219,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "gameLogic.php",
+			"settings":
+			{
+				"buffer_size": 10886,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "pencilpusher.js",
+			"settings":
+			{
+				"buffer_size": 19301,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "ArlLib/ArlGame.js",
+			"settings":
+			{
+				"buffer_size": 4733,
 				"line_ending": "Unix"
 			}
 		}
@@ -577,6 +601,7 @@
 	"file_history":
 	[
 		"/Users/adamrossledoux/Code/Web/Idle Games/PencilPusherPrototype/index.html",
+		"/Users/adamrossledoux/Code/Web/Idle Games/PencilPusherPrototype/.gitignore",
 		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/minSizeTest.as",
 		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/minSizeTest3.as",
 		"/Users/adamrossledoux/Code/Flash/Projects/DameSelyse-master/src/minSizeTest2.as",
@@ -695,6 +720,25 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"setBid",
+			"message(",
+			"Offerbidto",
+			"popup",
+			"offer",
+			"bid",
+			"flyingDiv",
+			"switchUser",
+			"buyUpgrade",
+			"moneyUnit",
+			"emailButton",
+			"updateEmailButton",
+			"notificationList",
+			"loop",
+			"mainloop",
+			"http://www.ajkolenc.com/PencilPusher/gameLogic.php",
+			"%;",
+			"moneyforboss",
+			"accept bid",
 			"update = ",
 			"moneyRateToBoss",
 			"normalupdate",
@@ -803,26 +847,7 @@
 			"scoreChange",
 			"GameState",
 			"gameState.getScore()",
-			"directions.stop",
-			"score",
-			"Agent:",
-			"agent",
-			"evaluationsFunction",
-			"agent:",
-			"agent ",
-			"agent",
-			"GameState",
-			"debug",
-			"data.score",
-			"list",
-			"food",
-			"foodheuristic",
-			"foodheur",
-			"your code",
-			"foodHeuristic",
-			"60px",
-			"manhattan",
-			"astarsearc"
+			"directions.stop"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -830,6 +855,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"http://pencilpusher.gamestudio.gatech.edu/gameLogic.php",
 			"setPos",
 			"getPos",
 			"this",
@@ -852,15 +878,15 @@
 					"file": "index.html",
 					"settings":
 					{
-						"buffer_size": 19202,
+						"buffer_size": 3127,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								19139,
-								19139
+								901,
+								901
 							]
 						],
 						"settings":
@@ -869,44 +895,71 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 10422.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 0,
-					"file": "index.html",
-					"settings":
-					{
-						"buffer_size": 19202,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4373,
-								4373
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 2164.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 1,
+					"file": "pencilpusher.css",
+					"settings":
+					{
+						"buffer_size": 1909,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								747,
+								747
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1633.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "player.js",
+					"settings":
+					{
+						"buffer_size": 5219,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 27.0,
+						"translation.y": 1401.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
 					"file": "gameLogic.php",
 					"settings":
 					{
-						"buffer_size": 7668,
+						"buffer_size": 10886,
 						"regions":
 						{
 						},
@@ -923,25 +976,31 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 112.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
-				},
+				}
+			]
+		},
+		{
+			"selected": 1,
+			"sheets":
+			[
 				{
-					"buffer": 2,
-					"file": "player.js",
+					"buffer": 4,
+					"file": "pencilpusher.js",
 					"settings":
 					{
-						"buffer_size": 4140,
+						"buffer_size": 19301,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								3034,
+								3044
 							]
 						],
 						"settings":
@@ -950,7 +1009,61 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1482.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "pencilpusher.js",
+					"settings":
+					{
+						"buffer_size": 19301,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6373,
+								6423
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3507.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "ArlLib/ArlGame.js",
+					"settings":
+					{
+						"buffer_size": 4733,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3519,
+								3519
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1670.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -975,11 +1088,18 @@
 				0,
 				1,
 				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
 			]
 		],
 		"cols":
 		[
 			0.0,
+			0.605584716797,
 			1.0
 		],
 		"rows":
