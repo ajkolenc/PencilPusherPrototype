@@ -220,3 +220,5 @@ pip-log.txt
 *.sublime-project
 *.sublime-workspace
 pencilpusher.sublime-workspace
+
+*.sublime-workspace
