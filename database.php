@@ -79,6 +79,18 @@
 		database_query($query);
 	}
 	
+	function get_all_members(){
+		$query = "SELECT * FROM employees;";
+		$result = database_query($query);
+		$arr = array();
+		if ($result){
+			while ($row = mysqli_fetch_assoc($result)){
+				$arr[] = $row;
+			}
+		}
+		return $arr;		
+	}
+	
 	function new_boss($username, $boss){
 		$bossInfo = user_info($boss);
 		$tier = $bossInfo['Tier'] + 1;
