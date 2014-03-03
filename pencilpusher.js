@@ -2,7 +2,7 @@
 var money = 0;
 var moneyRate = 0;
 var moneyTimer = new ArlEtc.Timer(1);
-var menus = ["deskMenu", "officeMenu", "employeesMenu", "emailMenu"];
+var menus = ["deskMenu", "officeMenu", "employeesMenu", "emailMenu", "leaderboardMenu"];
 var menuIndex = 0;
 var employeeLevelDepth = 0;
 
@@ -303,12 +303,16 @@ var switchMenu = function(index) {
 		newEmployeeLevel(2, gameInfo.player.username);
 	}
 	else if (menuIndex == 3) {
-		var notificationDiv = document.getElementById("emailMenu")
+		var notificationDiv = document.getElementById("emailMenu");
 		notificationDiv.innerHTML = "";
 
 		for (var i = notificationList.length-1; i >= 0; i--) {
 			notificationDiv.innerHTML += notificationList[i].toHTML();
 		}
+	}
+	else if (menuIndex == 4) {
+		var leaderboardDiv = document.getElementById("leaderboardMenu");
+		//do stuff
 	}
 }
 
