@@ -6,13 +6,16 @@ var menus = ["deskMenu", "officeMenu", "employeesMenu", "emailMenu", "leaderboar
 var menuIndex = 0;
 var employeeLevelDepth = 0;
 
+var moneyRateFromBossSupplies = 0;
 var moneyRateForBoss = 0;
 var moneyRateFromEmployees = 0;
 
 var timeUntilEmailIsOld = 10; //seconds
 
+var selectedUserOnChart = "Test User 1";
+
 //ajax server communication
-var username = "Test User 1";
+var username = "Adam";
 var gameInfo;
 var updateTimer = new ArlEtc.Timer(5);
 var hasNewNotification = false;
@@ -34,10 +37,13 @@ var employeeColor1 = new ArlDraw.Color(200,200,200,1);
 var employeeColor2 = new ArlDraw.Color(150,150,150,1);
 var emailUnread = new ArlDraw.Color(230,230,230,1);
 var emailRead = new ArlDraw.Color(120,120,120,1);
+var meColor = new ArlDraw.Color(150,200,150,1);
+var selectColor = new ArlDraw.Color(255,255,150,1);
 var scribbleList = [];
 var maxScribbleLength = 800;
 var flyingDivNum = 0;
 var flyingDivs = [];
+var chartLevels = [];
 
 //data
 var employeeList = [];
@@ -104,31 +110,12 @@ ArlGame.events.init = function() {
 	ArlGame.gameCanvas.width = ArlGame.gameCanvas.scrollWidth;
 	ArlGame.gameCanvas.height = ArlGame.gameCanvas.scrollHeight;
 
-	switchUser("Test User 1");
+	switchUser(username);
 };
 ArlGame.events.mainLoop = function() {
 	ArlDraw.clearCanvas(ArlGame.gameCanvas);
 
-	var totalMoneyRate = moneyRate - moneyRateForBoss + moneyRateFromEmployees;
-	var realMoneyRate = totalMoneyRate;
-
-	var curMoney = Math.floor(money + (realMoneyRate * moneyTimer.percentDone()));	
-
-	document.getElementById("money").innerHTML = curMoney + " " + moneyUnit;
-	document.title = curMoney;
-
-	document.getElementById("moneyRate").innerHTML = "my production: " + moneyRate + " " + unitPerSecond;
-
-	document.getElementById("moneyRateForBoss").innerHTML = "to boss: - " + moneyRateForBoss + " " + unitPerSecond;
-	document.getElementById("moneyRateFromEmployees").innerHTML = "from employees: + " + moneyRateFromEmployees + " " + unitPerSecond;
-
-	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL: " + totalMoneyRate + " " + unitPerSecond;
-
-	if (moneyTimer.isDone()) {
-		money += realMoneyRate;
-
-		moneyTimer.reset();
-	}
+	updateMoneyCounter();
 
 	if (updateTimer.isDone()) {
 		$.ajax({
@@ -146,6 +133,43 @@ ArlGame.events.mainLoop = function() {
 	drawPaperLines(ArlGame.context, ArlGame.gameCanvas.width, ArlGame.gameCanvas.height, 10, dullRed, dullBlue);
 	ArlDraw.drawPath(ArlGame.context, scribbleList, 2, darkGrey);
 
+	updateNotifications();
+
+	//update chart
+	if (menuIndex == 2) {
+		for (var i = 0; i < chartLevels.length; i++) {
+			chartLevels[i].update();
+		}
+	}
+};
+
+//FUNCTIONS
+var updateMoneyCounter = function() {
+	//var totalMoneyRate = moneyRate - moneyRateForBoss + moneyRateFromBossSupplies + moneyRateFromEmployees;
+	var totalMoneyRate = moneyRate - moneyRateForBoss + moneyRateFromEmployees;
+	var realMoneyRate = totalMoneyRate;
+
+	var curMoney = Math.floor(money + (realMoneyRate * moneyTimer.percentDone()));	
+
+	document.getElementById("money").innerHTML = curMoney + " " + moneyUnit;
+	document.title = curMoney;
+
+	document.getElementById("moneyRate").innerHTML = "my production: " + moneyRate + " " + unitPerSecond;
+
+	document.getElementById("moneyRateBossSupplies").innerHTML = "boss's supplies: + " + moneyRateFromBossSupplies + " " + unitPerSecond;
+	document.getElementById("moneyRateForBoss").innerHTML = "to boss: - " + moneyRateForBoss + " " + unitPerSecond;
+	document.getElementById("moneyRateFromEmployees").innerHTML = "from employees: + " + moneyRateFromEmployees + " " + unitPerSecond;
+
+	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL: " + totalMoneyRate + " " + unitPerSecond;
+
+	if (moneyTimer.isDone()) {
+		money += realMoneyRate;
+
+		moneyTimer.reset();
+	}
+}
+
+var updateNotifications = function() {
 	updateEmailButton();
 
 	var hasOldNotification = false;
@@ -169,9 +193,8 @@ ArlGame.events.mainLoop = function() {
 	for (var i = 0; i < flyingDivs.length; i++) {
 		flyingDivs[i].update();
 	}
-};
+}
 
-//FUNCTIONS
 var resetUserAccount = function() {
 	$.ajax({
 		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
@@ -199,7 +222,23 @@ var updateStore = function() {
 		storeDiv.innerHTML += "<button onclick='buyUpgrade(" + item.cost.toString() + 
 			"," + quote(item.name) + ");'>Buy (" + item.cost.toString() + moneyUnit + ")</button>" + "<br/><br/>";
 	}
+
+	storeDiv.innerHTML += "<div>MY BOSS'S OFFICE SUPPLIES</div>"
+	for (var i = 0; i < gameInfo.store.length; i++) {
+		var item = gameInfo.store[i];
+
+		storeDiv.innerHTML += "<div class='itemName'>" + item.name + "</div>";
+
+		var num = 0;
+		for (var j = 0; j < gameInfo.boss.items.length; j++) {
+			if (gameInfo.boss.items[j].name == item.name) {
+				num = gameInfo.boss.items[j].quantity;
+			}
+		}
+		storeDiv.innerHTML += "x" + num.toString();
+	}
 }
+
 
 var quote = function(str) {
 	return quoteChar + str + quoteChar;
@@ -215,12 +254,24 @@ var defaultUpdate = function(msg) {
 	money = gameInfo.player.money;
 	//console.log(gameInfo.player.money);
 	moneyRate = parseFloat(gameInfo.player.production)
+
+	//TODO: NOT SURE THIS IS ACCURATE
+	moneyRateFromBossSupplies = 0;
+	for (var i = 0; i < gameInfo.boss.items.length; i++) {
+		var item = gameInfo.boss.items[i];
+		console.log(item);
+		moneyRateFromBossSupplies += item.quantity * item.production;
+	}
+
 	moneyRateForBoss = moneyRate / 2;
+
 	moneyRateFromEmployees = 0;
 	for (var i = 0; i < gameInfo.employees.length; i++) {
 		moneyRateFromEmployees += gameInfo.employees[i].production / 2;
 	}
-	moneyRate -= moneyRateFromEmployees;
+
+	moneyRate -= moneyRateFromEmployees; //TODO: WHY IS THIS HERE???
+
 	//notifications
 	for (var i = 0; i < gameInfo.notifications.length; i++) {
 		var m = new Message(gameInfo.notifications[i].sender + ": " + gameInfo.notifications[i].message);
@@ -281,6 +332,58 @@ var getMenu = function(index) {
 	return document.getElementById(menus[index]);
 }
 
+var generateCompanyChart = function(selectedUser) {
+	chartLevels = [];
+
+	var employeesDiv = document.getElementById("employeesMenu");
+
+	while (employeesDiv.hasChildNodes()) {
+    	employeesDiv.removeChild(employeesDiv.lastChild);
+	}
+
+	selectedUserOnChart = selectedUser;
+
+	var bossOfSelectedUser = null;
+	var bossOfBossOfSelectedUser = null;
+
+	//HAX O CLOCK
+	$.ajax({
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
+		type: 'post',
+		data: {'UpdateType' : 'NormalUpdate', 'Username' : selectedUser},
+		success: function(msg) {
+			var tempGameInfo = new GameInfo(selectedUser);
+			tempGameInfo.update(msg);
+
+			bossOfSelectedUser = tempGameInfo.boss.username;
+
+			$.ajax({
+					url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
+					type: 'post',
+					data: {'UpdateType' : 'NormalUpdate', 'Username' : bossOfSelectedUser},
+					success: function(msg) {
+						var tempGameInfo = new GameInfo(bossOfSelectedUser);
+						tempGameInfo.update(msg);
+
+						bossOfBossOfSelectedUser = tempGameInfo.boss.username;
+
+						if (bossOfSelectedUser != bossOfBossOfSelectedUser) { //special case for "THE BOSS"
+							var c1 = new ChartLevel(employeesDiv, null, bossOfBossOfSelectedUser);
+						}
+						var c2 = new ChartLevel(employeesDiv, c1, bossOfSelectedUser);
+						var c3 = new ChartLevel(employeesDiv, c2, selectedUser);
+					},
+					error: function() {
+						console.log("nope nope nope");
+					}
+				});
+		},
+		error: function() {
+			console.log("nope nope nope");
+		}
+	});
+}
+
 var switchMenu = function(index) {
 	if (menuIndex == 3) {
 		for (var i = 0; i < notificationList.length; i++) {
@@ -293,14 +396,19 @@ var switchMenu = function(index) {
 	getMenu(menuIndex).style.display = "block";	
 
 	if (menuIndex == 2) {
+		generateCompanyChart(selectedUserOnChart);
+
+		/*
 		var employeesDiv = document.getElementById("employeesMenu");
 		employeesDiv.innerHTML = "";
+
 		employeeLevelDepth = 0;
 
 		newBossLevel(gameInfo.boss);
 		myBossName = gameInfo.boss.username;
 		newEmployeeLevel(1, gameInfo.boss.username);
 		newEmployeeLevel(2, gameInfo.player.username);
+		*/
 	}
 	else if (menuIndex == 3) {
 		var notificationDiv = document.getElementById("emailMenu");
@@ -344,6 +452,10 @@ var switchUser = function(newUsername) {
 			defaultUpdate(msg);
 
 			updateStore();
+
+			switchMenu(0);
+
+			selectedUserOnChart = username;
 		},
 		error: function() {
 			console.log("log on failed");
@@ -402,7 +514,6 @@ var newEmployeeLevel = function(level, bossName, color) {
 				document.getElementById("employeeLevel" + i.toString()).innerHTML = "";
 			}
 
-			levelDiv.innerHTML = "";
 			levelDiv.innerHTML += bossName + "'s EMPLOYEES <br/>";
 			console.log(tempGameInfo.employees);
 			for (var i = 0; i < tempGameInfo.employees.length; i++) {
@@ -444,9 +555,12 @@ var openEmployeeInfoPopup = function(name) {
 			document.getElementById("employeeInfoPopup_Name").innerHTML = name;
 			document.getElementById("employeeInfoPopup_Production").innerHTML = tmpGameInfo.player.production + " " + unitPerSecond;
 			document.getElementById("employeeInfoPopup_EmployeeNum").innerHTML = tmpGameInfo.employees.length + " employees";
-			document.getElementById("employeeInfoPopup_offerBidButton").onclick = function() {
-				offerBidTo(name);
-			};
+			
+			if (tmpGameInfo.player.tier >= gameInfo.player.tier) {
+				document.getElementById("employeeInfoPopup_offerBidButton").onclick = function() {
+					offerBidTo(name);
+				}
+			}
 
 			var numBids = 0;
 			for (var i = 0; i < gameInfo.player.bids.length; i++) {
@@ -568,16 +682,14 @@ EmployeeWrapper.prototype = {
 		var htmlStr = "";
 
 		htmlStr += "<div class='employeeBoxWrapper' style='color: #000; position: relative; float:left;'>";
-		htmlStr += "<center>";
-		htmlStr += "^<br/>";
-		htmlStr += "|<br/>";
 		htmlStr += "<div class='employeeBox'>";
+		htmlStr += "<center>";
 		htmlStr += this.name + "<br/>";
 		htmlStr += this.productionRate + " " + unitPerSecond + "<br/>";
 		htmlStr += "<button onclick='openEmployeeInfoPopup(" + quoteChar + this.name + quoteChar + ");'>MORE INFO</button><br/>";
 		htmlStr += "<button onclick='newEmployeeLevel(" + (level + 1).toString() + "," + quoteChar + this.name + quoteChar + ", employeeColor1);'>EMPLOYEES</button><br/>";
-		htmlStr += "</div>";
 		htmlStr += "</center>";
+		htmlStr += "</div>";
 		htmlStr += "</div>";
 
 		return htmlStr;
@@ -660,3 +772,177 @@ FlyingDiv.prototype = {
 		this.div.style.color = this.color.toHTML();
 	}
 };
+
+var ChartBox = function(container, employeeName, productionRate) {
+	this.div = document.createElement("div");
+	this.div.className = "chartBox";
+
+	var htmlStr = ""
+	htmlStr += "<center>";
+	htmlStr += employeeName + "<br/>";
+	htmlStr += productionRate + " " + unitPerSecond + "<br/>";
+	htmlStr += "<button onclick='generateCompanyChart(" + quote(employeeName) + ");'>SELECT</button>"
+	htmlStr += "<button onclick='openEmployeeInfoPopup(" + quote(employeeName) + ");'>INFO</button><br/>"
+	htmlStr += "</center>";
+
+	this.div.innerHTML = htmlStr;
+
+	this.username = employeeName;
+
+	if (employeeName == selectedUserOnChart) {
+		this.div.style.border = "4px solid " + selectColor.toHTML();
+	}
+
+	if (employeeName == username){
+		this.div.style.background = meColor.toHTML();
+	}
+	container.insertBefore(this.div, container.firstChild);
+}
+
+var ChartLevel = function(container, levelAbove, bossname) {
+	this.container = container;
+	this.levelAbove = levelAbove;
+	this.bossname = bossname;
+	this.width = 0;
+	this.treeDivWidth = 0;
+
+	this.div = document.createElement("div");
+	this.div.className = "chartLevel";
+
+	this.boxes = [];
+
+	this.treeDiv = document.createElement("div");
+	this.treeDiv.style.height = "40px";
+	this.treeLineDivs = [];
+
+	this.treeLineFromBoss = document.createElement("div");
+	this.treeLineFromBoss.style.width = "3px";
+	this.treeLineFromBoss.style.background = "#ddd";
+	this.treeLineFromBoss.style.height = "18px";
+	this.treeLineFromBoss.style.display = "inline-block";
+
+	this.treeLineAcross = document.createElement("div");
+	this.treeLineAcross.style.background = "#ddd";
+	this.treeLineAcross.style.height = "4px";
+	this.treeLineAcross.style.width = "100%";
+	this.treeLineAcross.style.display = "inline-block";
+
+	//this.treeLineDivs.push(d);
+
+	if (this.container.lastChild) {
+		this.container.insertBefore(this.div, this.container.lastChild.nextSibling);
+	}
+	else {
+		this.container.insertBefore(this.div, this.container.lastChild);
+	}
+	this.container.insertBefore(this.treeDiv, this.div);
+
+	var cl = this; //reference to this object for the callback function
+	$.ajax({
+		url: 'http://pencilpusher.gamestudio.gatech.edu/gameLogic.php',
+		type: 'post',
+		data: {'UpdateType' : 'EmployeeInfo', 'Employee' : bossname},
+		success: function(msg) {
+			var tempGameInfo = new EmployeeInfo(msg);
+			var boxWidth = 170; //hax
+			for (var i = 0; i < tempGameInfo.employees.length; i++) {
+				var e = tempGameInfo.employees[i];
+				
+				var box = new ChartBox(cl.div, e.name, e.production);
+				cl.boxes.push(box);
+
+				var d = document.createElement("div");
+				d.style.width = "3px";
+				d.style.background = "#ddd";
+				d.style.height = "18px";
+				d.style.display = "inline-block";
+				cl.treeDiv.insertBefore(d, cl.treeDiv.firstChild);
+
+				cl.treeLineDivs.push(d);
+				
+			}
+			cl.width = (boxWidth * tempGameInfo.employees.length);
+			cl.div.style.width = cl.width  + "px";
+			cl.div.style.marginLeft = (cl.container.scrollWidth - cl.width)/2;
+
+			cl.treeDiv.insertBefore(cl.treeLineAcross, cl.treeDiv.firstChild);
+			cl.treeDiv.insertBefore(cl.treeLineFromBoss, cl.treeDiv.firstChild);
+		},
+		error: function() {
+			console.log("nope nope nope");
+		}
+	});
+
+	chartLevels.push(this);
+}
+ChartLevel.prototype = {
+	update: function() {
+		//center dat shit
+		if (this.width > this.container.scrollWidth) {
+			this.container.scrollWidth = this.width;
+		}
+		this.div.style.marginLeft = (this.container.scrollWidth - this.width)/2 + "px";
+
+		if (this.levelAbove != null) {
+			this.treeDivWidth = Math.max(this.levelAbove.width, this.width);
+		}
+		else {
+			this.treeDivWidth = this.width;
+		}
+		this.treeDiv.style.width = this.treeDivWidth + "px";
+
+		if (this.treeDivWidth > this.container.scrollWidth) {
+			this.container.scrollWidth = this.treeDivWidth;
+		}
+		this.treeDiv.style.marginLeft = (this.container.scrollWidth - this.treeDivWidth)/2 + "px";
+
+		//change all the line positions
+		var bossLinePos = this.treeDivWidth/2 - 10;
+		var firstLinePos = Math.max((this.treeDivWidth - this.width)/2, 0) + 75;
+		var lastLinePos = 0;
+
+		if (this.levelAbove != null) {
+			for (var i = 0; i < this.levelAbove.boxes.length; i++) {
+				var b = this.levelAbove.boxes[i];
+				if (b.username == this.bossname) {
+					var dif = this.treeDivWidth - this.levelAbove.width; 
+					this.treeLineFromBoss.style.marginRight = ((dif/2) + 100 + (i*160)) + "px";
+					bossLinePos = ((this.treeDivWidth - dif/2) - (100 + (i*160)));
+					this.treeLineFromBoss.style.marginLeft = bossLinePos + "px";
+				}
+			}
+		}
+		else {
+			this.treeLineFromBoss.style.marginRight = this.treeDivWidth/2 + "px";
+			this.treeLineFromBoss.style.marginLeft = (this.treeDivWidth/2 - 10) + "px";
+		}
+
+		for (var i = 0; i < this.treeLineDivs.length; i++) {
+			var margin = 0;
+			if (i == this.treeLineDivs.length-1) {
+				margin += Math.max((this.treeDivWidth - this.width)/2, 0);
+			}
+			else {
+				margin += 75;
+			}
+			margin += 75;
+
+			var tld = this.treeLineDivs[i];
+
+			tld.style.marginLeft = margin + "px";
+
+			lastLinePos += margin + 3;
+		}
+
+		if (this.treeLineDivs.length == 0) {
+			firstLinePos = bossLinePos;
+		}
+		
+		//change across line width
+		var leftPos = Math.min(firstLinePos, bossLinePos);
+		var rightPos = Math.max(lastLinePos, bossLinePos+3);
+		this.treeLineAcross.style.width = (rightPos - leftPos) + "px";
+		this.treeLineAcross.style.marginLeft = leftPos + "px";
+		this.treeLineAcross.style.marginRight = (this.treeDivWidth - rightPos) + "px";
+	}
+}

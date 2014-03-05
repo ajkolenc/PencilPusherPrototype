@@ -21,13 +21,13 @@
 
 	<body onload="ArlGame.init()" onresize="ArlGame.resize()">
 		<div id = "topBar">
-			PENCIL PUSHER
+			<div id = "gameTitle"> PENCIL PUSHER </div>
 			<div id = "accountInfo">
 				<div id="usernameOutput">
 					USER: USERNAME
 				</div>
-				<input id="usernameInput" type="text" placeholder="User Name"></input>
-				<button onclick="switchUser(document.getElementById('usernameInput').value);"> LOGIN </button>
+				<input id="usernameInput" type="text" placeholder="User Name" style="width: 66%;"></input>
+				<button onclick="switchUser(document.getElementById('usernameInput').value);" style="width: 30%;"> LOGIN </button>
 			</div>
 		</div>
 
@@ -38,21 +38,28 @@
 				0 moneyz
 			</div>
 			<div id="productionRateDisplay">
-				<div id="moneyRate">
-					0 moneyz / second
+				<div id="moneyRate" class="moneyRate">
+					my production: 0 $/s
 				</div>
-				<br/><br/>
-				<div id="moneyRateForBoss">
-					- 0 moneyz / second to boss
+				<br/>
+				<br/>
+				<div id="moneyRateBossSupplies" class="moneyRate">
+					from boss's office supplies: + 0 $/s
 				</div>
-				<br/><br/>
-				<div id="moneyRateFromEmployees">
-					+ 0 moneyz / second from employees
+				<br/>
+				<br/>
+				<div id="moneyRateForBoss" class="moneyRate">
+					to boss: - 0 $/s
 				</div>
-				<br/><br/>
+				<br/>
+				<br/>
+				<div id="moneyRateFromEmployees" class="moneyRate">
+					from employees: + 0 $/s
+				</div>
+				<br/>
 				<div id="moneyRateTotal">
-				<hr/>
-				TOTAL: A gajillion dollars / second
+					<hr/>
+					TOTAL: A gajillion $/s
 				</div>
 			</div>
 
