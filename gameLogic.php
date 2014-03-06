@@ -54,22 +54,28 @@
 		// If you boss is offline, subtract out what was previously your production from his
 		if ($bossInfo["Online"] == 0){
 			$bossInfo["Production"] -= $userInfo["Production"] / 2.0;
+			$bossInfo["MaxProduction"] -= $userInfo["MaxProduction"] / 2.0;
 		}
+		
+		$userInfo['MaxProduction'] = calculate_production() + employee_max_production();
 		$userInfo['Production'] = calculate_production() + employee_production();
 
 		// Add back in your new production so his production is accurate, even though he is offline
 		if ($bossInfo["Online"] == 0){
 			$bossInfo["Production"] += $userInfo["Production"] / 2.0;
+			$bossInfo["MaxProduction"] += $userInfo["MaxProduction"] / 2.0;
 		}
+		
 		$moneyEarned = $userInfo['Production'] * $updateTime;
 		$userInfo['Money'] += $moneyEarned / 2.0;
+		$userInfo['Tier'] = $bossInfo['Tier'] + 1;
 		
 		// He can't get the money himself, so you give it to him
 		if ($bossInfo["Online"] == 0){
 			$userInfo['Money'] += $moneyEarned / 2.0;
 		}
-		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
-		update_boss($bossInfo['Username'], $bossInfo['Money'], $bossInfo["Production"]);
+		user_update($username, $userInfo['Money'], $userInfo['MaxProduction'], $userInfo['Production'], $userInfo["Tier"], time(), $updateTime + $userInfo["TimeOnline"]);
+		update_boss($bossInfo['Username'], $bossInfo['Money'], $bossInfo["MaxProduction"], $bossInfo["Production"]);
 	}
 	
 	function resetUser(){
@@ -82,8 +88,9 @@
 		global $username, $userInfo, $bossInfo;
 		user_online($username, time());
 		$userInfo["Online"] = 1;
-		$userInfo['Production'] = calculate_production() + employee_production();
-		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
+ 		$userInfo['Production'] = calculate_production() + employee_production();
+ 		$userInfo['MaxProduction'] = calculate_production() + employee_max_production();
+		user_update($username, $userInfo['Money'], $userInfo["MaxProduction"], $userInfo['Production'], time(), strtotime($userInfo["LastUpdated"]) + $userInfo["TimeOnline"]);
 		// If your boss is offline, you need to add your production into his so his is accurate
 		if ($bossInfo["Online"] == 0){
 			$bossInfo["Production"] += (calculate_production() + employee_production) / 2.0;
@@ -137,7 +144,10 @@
 		$bossInfo = user_info($bidder);
 		$bossItems = get_equipment($bossInfo['Username']);
 		$userInfo['Tier'] = $bossInfo['Tier'] + 1;
+		$userInfo['MaxProduction'] = calculate_production() + employee_max_production();
+		$userInfo['Production'] = calculate_production() + employee_production();
 		
+		user_update($username, $userInfo['Money'], $userInfo['MaxProduction'], $userInfo['Production'], $userInfo["Tier"], time(), 0);
 		new_boss($username, $bidder);
 		notify_user($bossInfo["Username"], $username, 2, "");
 	}
@@ -161,7 +171,7 @@
 		$assocItem = array("Username" => $username, "Equipment" => $item, "Quantity" => has_equipment($username, $item));
 		$userItems[] = $assocItem;
 		new_equipment($username, $item);
-		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
+		user_update($username, $userInfo['Money'], $userInfo['MaxProduction'], $userInfo['Production'], $userInfo["Tier"], time(), 0);
 		$userItems = get_equipment($username);
 		
 		foreach ($employeeInfo as $employee){
@@ -192,6 +202,18 @@
 				foreach ($employeeItems as $item){
 					$production += get_production($item["Equipment"]) * $item["Quantity"];
 				}
+			}
+		}
+		return $production / 2.0;
+	}
+	
+	function employee_max_production(){
+		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
+		$production = 0;
+		foreach ($employeeInfo as $employee){
+			$employeeItems = get_equipment($employee["Username"]);
+			foreach ($employeeItems as $item){
+				$production += get_production($item["Equipment"]) * $item["Quantity"];
 			}
 		}	
 		return $production / 2.0;
@@ -244,6 +266,7 @@
 			foreach ($employees as $employee){
 				$xml .= "<employee>";
 				$xml .= "<name>" . $employee["Username"] . "</name>";
+				$xml .= "<maxproduction>" . $employee["MaxProduction"] . "</maxproduction>";
 				$xml .= "<production>" . $employee["Production"] . "</production>";
 				$xml .= "<tier>". $employee["Tier"] . "</tier>";
 				$xml .= "</employee>";
@@ -255,6 +278,7 @@
 			$xml = "<gameInfo>";
 			$xml .= "<player>";
 			$xml .= "<money>" . $userInfo['Money'] . "</money>";	
+			$xml .= "<maxproduction>" . $userInfo["MaxProduction"] . "</maxproduction>";
 			$xml .= "<production>" . $userInfo['Production'] . "</production>";
 			$xml .= "<tier>" . $userInfo['Tier'] . "</tier>";
 			
@@ -300,6 +324,7 @@
 			foreach ($employeeInfo as $employee){
 				$xml .= "<employee>";
 				$xml .= "<name>" . $employee['Username'] . "</name>";
+				$xml .= "<maxproduction>" . $employee["MaxProduction"] . "</maxproduction>";
 				$xml .= "<production>" . $employee['Production'] . "</production>";
 				$xml .= "<tier>" . $employee["Tier"] . "</tier>";
 				$xml .= "</employee>";
@@ -308,6 +333,7 @@
 			
 			$xml .= "<boss>";
 			$xml .= "<name>" . $bossInfo["Username"] . "</name>";
+			$xml .= "<maxproduction>" . $bossInfo["MaxProduction"] . "</maxproduction>";
 			$xml .= "<production>" . $bossInfo['Production'] . "</production>";
 			$xml .= "<tier>" . $bossInfo["Tier"] . "</tier>";
 			$xml .= "<items>";

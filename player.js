@@ -19,7 +19,7 @@ function Item(name, quantity, production, cost){
 	}
 	this.name = name;
 	this.quantity = quantity;
-	this.production = production*quantity;
+	this.production = production;
 	this.cost = cost;
 }
 

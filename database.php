@@ -51,7 +51,7 @@
 		$tier = $bossInfo['Tier'] + 1;
 		$pass = md5($password);
 		$date = time();
-		$query = "INSERT INTO employees VALUES ('$username','$pass', '$money', '$production','$boss', FROM_UNIXTIME('$date'), '0', '$tier');";
+		$query = "INSERT INTO employees VALUES ('$username','$pass', '$money', '$production', '$production', '100', '$boss', FROM_UNIXTIME('$date'), '0', '$tier', FROM_UNIXTIME('$date'), '0');";
 		database_query($query);
 	}
 
@@ -98,14 +98,14 @@
 		database_query($query);
 	}
 	
-	function user_update($username, $money, $production, $timestamp){
-		$query = "UPDATE employees SET Money='$money', Production='$production', LastUpdated=FROM_UNIXTIME('$timestamp') WHERE Username='$username';";
-		database_query($query);	
+	function user_update($username, $money, $maxproduction, $production, $tier, $timestamp, $onlineTime){
+		$query = "UPDATE employees SET Money='$money', MaxProduction='$maxproduction', Production='$production', Tier='$tier', LastUpdated=FROM_UNIXTIME('$timestamp'), TimeOnline='$onlineTime' WHERE Username='$username';";
+		database_query($query);
 	}
 	
-	function update_boss($username, $money, $production){
-		$query = "UPDATE employees SET Money='$money', Production='$production' WHERE Username='$username';";
-		database_query($query);	
+	function update_boss($username, $money, $maxproduction, $production){
+		$query = "UPDATE employees SET Money='$money', MaxProduction='$maxproduction', Production='$production' WHERE Username='$username';";
+		database_query($query);
 	}
 	
 	function user_online($username, $timestamp){
