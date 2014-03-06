@@ -72,7 +72,7 @@
 		
 		// He can't get the money himself, so you give it to him
 		if ($bossInfo["Online"] == 0){
-			$userInfo['Money'] += $moneyEarned / 2.0;
+			$bossInfo['Money'] += $moneyEarned / 2.0;
 		}
 		user_update($username, $userInfo['Money'], $userInfo['MaxProduction'], $userInfo['Production'], $userInfo["Tier"], time(), $updateTime + $userInfo["TimeOnline"]);
 		update_boss($bossInfo['Username'], $bossInfo['Money'], $bossInfo["MaxProduction"], $bossInfo["Production"]);
@@ -103,7 +103,7 @@
 		normal_update();
 		user_offline($username, time());
 		$userInfo["Online"] = 0;
-		$userInfo['Production'] = calculate_production() + employee_production();
+		$userInfo['Production'] = employee_production();
  		$userInfo['MaxProduction'] = calculate_production() + employee_max_production();
 		user_update($username, $userInfo['Money'], $userInfo["MaxProduction"], $userInfo['Production'], $userInfo['Tier'], time(), 0);
 		
@@ -183,13 +183,11 @@
 	function calculate_production(){
 		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
 		$production = 0;
-		if ($userInfo["Online"] > 0){
-			foreach ($userItems as $item){
-				$production += get_production($item["Equipment"]) * $item["Quantity"];
-			}
-			foreach ($bossItems as $item){
-				$production += get_production($item["Equipment"]) * $item["Quantity"];
-			}
+		foreach ($userItems as $item){
+			$production += get_production($item["Equipment"]) * $item["Quantity"];
+		}
+		foreach ($bossItems as $item){
+			$production += get_production($item["Equipment"]) * $item["Quantity"];
 		}
 		return $production;
 	}
@@ -199,10 +197,7 @@
 		$production = 0;
 		foreach ($employeeInfo as $employee){
 			if ($employee["Online"] > 0){
-				$employeeItems = get_equipment($employee["Username"]);
-				foreach ($employeeItems as $item){
-					$production += get_production($item["Equipment"]) * $item["Quantity"];
-				}
+				$production += $employee["Production"];
 			}
 		}
 		return $production / 2.0;
@@ -212,10 +207,7 @@
 		global $userInfo, $bossInfo, $username, $userItems, $bossItems, $employeeInfo;
 		$production = 0;
 		foreach ($employeeInfo as $employee){
-			$employeeItems = get_equipment($employee["Username"]);
-			foreach ($employeeItems as $item){
-				$production += get_production($item["Equipment"]) * $item["Quantity"];
-			}
+			$production += $employee["MaxProduction"];
 		}	
 		return $production / 2.0;
 	}

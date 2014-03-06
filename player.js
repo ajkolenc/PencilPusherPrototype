@@ -1,4 +1,4 @@
-function Player(username, money, maxproduction, production, items, tier){
+function Player(username, money, maxProduction, production, items, tier){
 	this.username = username;
 	this.money = money;
 	this.maxProduction = maxProduction;
@@ -42,9 +42,10 @@ function EmployeeInfo(xml){
 	
 	for (var i = 0; i < employees.childNodes.length; i++){
 		var eName = employees.childNodes[i].getElementsByTagName("name")[0].textContent;
-		var eProd = parseInt(employees.childNodes[i].getElementsByTagName("production")[0].textContent);
+		var eMaxProd = parseFloat(employees.childNodes[i].getElementsByTagName("maxproduction")[0].textContent);
+		var eProd = parseFloat(employees.childNodes[i].getElementsByTagName("production")[0].textContent);
 		var eTier = parseInt(employees.childNodes[i].getElementsByTagName("tier")[0].textContent);
-		this.employees.push(new Employee(eName, eProd, eTier));
+		this.employees.push(new Employee(eName, eMaxProd, eProd, eTier));
 	}
 }
 
