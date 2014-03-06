@@ -581,10 +581,18 @@ var openEmployeeInfoPopup = function(name) {
 			document.getElementById("employeeInfoPopup_Production").innerHTML = tmpGameInfo.player.production + " " + unitPerSecond;
 			document.getElementById("employeeInfoPopup_EmployeeNum").innerHTML = tmpGameInfo.employees.length + " employees";
 			
-			if (tmpGameInfo.player.tier >= gameInfo.player.tier) {
+			console.log(tmpGameInfo.player.tier);
+			console.log(gameInfo.player.tier);
+			if (tmpGameInfo.player.tier >= gameInfo.player.tier && tmpGameInfo.player.username != username) {
+				document.getElementById("employeeInfoPopup_bidInput").style.display = "inline-block";
+				document.getElementById("employeeInfoPopup_offerBidButton").style.display = "inline-block";
 				document.getElementById("employeeInfoPopup_offerBidButton").onclick = function() {
 					offerBidTo(name);
 				}
+			}
+			else {
+				document.getElementById("employeeInfoPopup_bidInput").style.display = "none";
+				document.getElementById("employeeInfoPopup_offerBidButton").style.display = "none";
 			}
 
 			var numBids = 0;
