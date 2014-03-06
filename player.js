@@ -1,16 +1,11 @@
-function Player(username, money, production, items, tier){
+function Player(username, money, maxproduction, production, items, tier){
 	this.username = username;
 	this.money = money;
+	this.maxProduction = maxProduction;
 	this.production = production;
 	this.items = items;
 	this.tier = tier;
 	this.bids = [];
-}
-
-Player.prototype.update = function(money, production, items){
-	this.money = money;
-	this.production = production;
-	this.items = items;
 }
 
 function Item(name, quantity, production, cost){
@@ -53,8 +48,9 @@ function EmployeeInfo(xml){
 	}
 }
 
-function Employee(name, production, tier){
+function Employee(name, maxProduction, production, tier){
 	this.name = name;
+	this.maxProduction = maxProduction;
 	this.production = production;
 	this.tier = tier;
 }
@@ -77,7 +73,9 @@ GameInfo.prototype.update = function(xml){
 	
 	this.player.money = parseInt(player.getElementsByTagName("money")[0].textContent);
 
-	this.player.production = parseInt(player.getElementsByTagName("production")[0].textContent);
+	this.player.maxProduction = parseFloat(player.getElementsByTagName("maxproduction")[0].textContent);
+	
+	this.player.production = parseFloat(player.getElementsByTagName("production")[0].textContent);
 	
 	this.player.tier = parseInt(player.getElementsByTagName("tier")[0].textContent);
 
@@ -93,7 +91,7 @@ GameInfo.prototype.update = function(xml){
 	var items = player.getElementsByTagName("items")[0];
 	for (var i = 0; i < items.childNodes.length; i++){
 		var item = items.childNodes[i];
-		this.player.items[item.getElementsByTagName("name")[0].textContent] = new Item(item.getElementsByTagName("name")[0].textContent, parseInt(item.getElementsByTagName("quantity")[0].textContent), parseInt(item.getElementsByTagName("production")[0].textContent));
+		this.player.items[item.getElementsByTagName("name")[0].textContent] = new Item(item.getElementsByTagName("name")[0].textContent, parseInt(item.getElementsByTagName("quantity")[0].textContent), parseFloat(item.getElementsByTagName("production")[0].textContent));
 	}
 	
 	var store = player.getElementsByTagName("store");
@@ -114,20 +112,21 @@ GameInfo.prototype.update = function(xml){
 	var boss = xmlDoc.getElementsByTagName("boss")[0];
 	//this.boss.money = parseInt(boss.getElementsByTagName("money")[0].textContent);
 	this.boss.username = boss.getElementsByTagName("name")[0].textContent;
-	this.boss.production = parseInt(boss.getElementsByTagName("production")[0].textContent);
+	this.boss.maxProduction = parseFloat(boss.getElementsByTagName("maxproduction")[0].textContent);
+	this.boss.production = parseFloat(boss.getElementsByTagName("production")[0].textContent);
 	this.boss.tier = parseInt(boss.getElementsByTagName("tier")[0].textContent);
 	items = boss.getElementsByTagName("items")[0];
 	this.boss.items = [];
 	for (var i = 0; i < items.childNodes.length; i++){
 		var item = items.childNodes[i];
-		this.boss.items.push(new Item(item.getElementsByTagName("name")[0].textContent, parseInt(item.getElementsByTagName("quantity")[0].textContent), parseInt(item.getElementsByTagName("production")[0].textContent)));
+		this.boss.items.push(new Item(item.getElementsByTagName("name")[0].textContent, parseInt(item.getElementsByTagName("quantity")[0].textContent), parseFloat(item.getElementsByTagName("production")[0].textContent)));
 	}
 	
 	var employees = xmlDoc.getElementsByTagName("employees")[0];
 	this.employees = [];
 	for (var i = 0; i < employees.childNodes.length; i++){
 		var employee = employees.childNodes[i];
-		this.employees.push(new Employee(employee.getElementsByTagName("name")[0].textContent, parseInt(employee.getElementsByTagName("production")[0].textContent), parseInt(employee.getElementsByTagName("tier")[0].textContent)));
+		this.employees.push(new Employee(employee.getElementsByTagName("name")[0].textContent, parseFloat(employee.getElementsByTagName("maxproduction")[0].textContent), parseFloat(employee.getElementsByTagName("production")[0].textContent), parseInt(employee.getElementsByTagName("tier")[0].textContent)));
 	}
 	
 	var notifications = xmlDoc.getElementsByTagName("notifications");

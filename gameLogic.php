@@ -90,7 +90,7 @@
 		$userInfo["Online"] = 1;
  		$userInfo['Production'] = calculate_production() + employee_production();
  		$userInfo['MaxProduction'] = calculate_production() + employee_max_production();
-		user_update($username, $userInfo['Money'], $userInfo["MaxProduction"], $userInfo['Production'], $bossInfo["Tier"] + 1, time(), strtotime($userInfo["LastUpdated"]) + $userInfo["TimeOnline"]);
+		user_update($username, $userInfo['Money'], $userInfo["MaxProduction"], $userInfo['Production'], $bossInfo["Tier"] + 1, time(), 0);
 		// If your boss is offline, you need to add your production into his so his is accurate
 		if ($bossInfo["Online"] == 0){
 			$bossInfo["Production"] += (calculate_production() + employee_production) / 2.0;
@@ -105,13 +105,13 @@
 		$userInfo["Online"] = 0;
 		$userInfo['Production'] = calculate_production() + employee_production();
  		$userInfo['MaxProduction'] = calculate_production() + employee_max_production();
-		user_update($username, $userInfo['Money'], $userInfo["MaxProduction"], $userInfo['Production'], time(), 0);
+		user_update($username, $userInfo['Money'], $userInfo["MaxProduction"], $userInfo['Production'], $userInfo['Tier'], time(), 0);
 		
 		// If your boss is offline, you need to remove your contribution to his production because he can't (and it needs to remain accurate)
 		if ($bossInfo["Online"] == 0){
 			$bossInfo["Production"] -= (calculate_production() + employee_production) / 2.0;
 		}		
-		update_boss($bossInfo['Username'], $bossInfo["MaxProduction"], $bossInfo['Money'], $bossInfo["Production"]);
+		update_boss($bossInfo['Username'], $bossInfo['Money'], $bossInfo["MaxProduction"], $bossInfo["Production"]);
 	}
 	
 	function interact(){
