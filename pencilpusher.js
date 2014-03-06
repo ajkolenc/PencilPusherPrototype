@@ -1,14 +1,15 @@
 //logic
 var money = 0;
-var moneyRate = 0;
 var moneyTimer = new ArlEtc.Timer(1);
 var menus = ["deskMenu", "officeMenu", "employeesMenu", "emailMenu", "leaderboardMenu"];
 var menuIndex = 0;
 var employeeLevelDepth = 0;
 
+var moneyRateFromMySupplies = 0;
 var moneyRateFromBossSupplies = 0;
 var moneyRateForBoss = 0;
 var moneyRateFromEmployees = 0;
+var moneyRateTotal = 0;
 
 var timeUntilEmailIsOld = 10; //seconds
 
@@ -145,25 +146,20 @@ ArlGame.events.mainLoop = function() {
 
 //FUNCTIONS
 var updateMoneyCounter = function() {
-	//var totalMoneyRate = moneyRate - moneyRateForBoss + moneyRateFromBossSupplies + moneyRateFromEmployees;
-	var totalMoneyRate = moneyRate - moneyRateForBoss + moneyRateFromEmployees;
-	var realMoneyRate = totalMoneyRate;
-
-	var curMoney = Math.floor(money + (realMoneyRate * moneyTimer.percentDone()));	
+	var curMoney = Math.floor(money + (moneyRateTotal * moneyTimer.percentDone()));	
 
 	document.getElementById("money").innerHTML = curMoney + " " + moneyUnit;
 	document.title = curMoney;
 
-	document.getElementById("moneyRate").innerHTML = "my production: " + moneyRate + " " + unitPerSecond;
-
+	document.getElementById("moneyRate").innerHTML = "my production: " + moneyRateFromMySupplies + " " + unitPerSecond;
 	document.getElementById("moneyRateBossSupplies").innerHTML = "boss's supplies: + " + moneyRateFromBossSupplies + " " + unitPerSecond;
 	document.getElementById("moneyRateForBoss").innerHTML = "to boss: - " + moneyRateForBoss + " " + unitPerSecond;
 	document.getElementById("moneyRateFromEmployees").innerHTML = "from employees: + " + moneyRateFromEmployees + " " + unitPerSecond;
 
-	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL: " + totalMoneyRate + " " + unitPerSecond;
+	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL: " + moneyRateTotal + " " + unitPerSecond;
 
 	if (moneyTimer.isDone()) {
-		money += realMoneyRate;
+		//money += moneyRateTotal;
 
 		moneyTimer.reset();
 	}
@@ -253,7 +249,10 @@ var defaultUpdate = function(msg) {
 
 	money = gameInfo.player.money;
 	//console.log(gameInfo.player.money);
-	moneyRate = parseFloat(gameInfo.player.production)
+
+	var productionBeforeTax = parseFloat(gameInfo.player.production);
+
+	moneyRateTotal = productionBeforeTax / 2;
 
 	//TODO: NOT SURE THIS IS ACCURATE
 	moneyRateFromBossSupplies = 0;
@@ -263,14 +262,14 @@ var defaultUpdate = function(msg) {
 		moneyRateFromBossSupplies += item.quantity * item.production;
 	}
 
-	moneyRateForBoss = moneyRate / 2;
+	moneyRateForBoss = productionBeforeTax / 2;
 
 	moneyRateFromEmployees = 0;
 	for (var i = 0; i < gameInfo.employees.length; i++) {
 		moneyRateFromEmployees += gameInfo.employees[i].production / 2;
 	}
 
-	moneyRate -= moneyRateFromEmployees; //TODO: WHY IS THIS HERE???
+	moneyRateFromMySupplies = productionBeforeTax - moneyRateFromBossSupplies - moneyRateFromEmployees;
 
 	//notifications
 	for (var i = 0; i < gameInfo.notifications.length; i++) {
