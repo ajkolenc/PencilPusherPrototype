@@ -107,7 +107,7 @@ GameInfo.prototype.update = function(xml){
 			if (name in this.player.items){
 				quantity = this.player.items[name].quantity;
 			}
-			this.store.push(new Item(name, quantity, parseInt(item.getElementsByTagName("production")[0].textContent), parseFloat(item.getElementsByTagName("cost")[0].textContent)));
+			this.store.push(new Item(name, quantity, parseFloat(item.getElementsByTagName("production")[0].textContent), parseFloat(item.getElementsByTagName("cost")[0].textContent)));
 		}
 	}
 	

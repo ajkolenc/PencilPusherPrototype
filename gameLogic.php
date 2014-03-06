@@ -90,7 +90,7 @@
 		$userInfo["Online"] = 1;
  		$userInfo['Production'] = calculate_production() + employee_production();
  		$userInfo['MaxProduction'] = calculate_production() + employee_max_production();
-		user_update($username, $userInfo['Money'], $userInfo["MaxProduction"], $userInfo['Production'], time(), strtotime($userInfo["LastUpdated"]) + $userInfo["TimeOnline"]);
+		user_update($username, $userInfo['Money'], $userInfo["MaxProduction"], $userInfo['Production'], $bossInfo["Tier"] + 1, time(), strtotime($userInfo["LastUpdated"]) + $userInfo["TimeOnline"]);
 		// If your boss is offline, you need to add your production into his so his is accurate
 		if ($bossInfo["Online"] == 0){
 			$bossInfo["Production"] += (calculate_production() + employee_production) / 2.0;
@@ -104,13 +104,14 @@
 		user_offline($username, time());
 		$userInfo["Online"] = 0;
 		$userInfo['Production'] = calculate_production() + employee_production();
-		user_update($username, $userInfo['Money'], $userInfo['Production'], time());
+ 		$userInfo['MaxProduction'] = calculate_production() + employee_max_production();
+		user_update($username, $userInfo['Money'], $userInfo["MaxProduction"], $userInfo['Production'], time(), 0);
 		
 		// If your boss is offline, you need to remove your contribution to his production because he can't (and it needs to remain accurate)
 		if ($bossInfo["Online"] == 0){
 			$bossInfo["Production"] -= (calculate_production() + employee_production) / 2.0;
 		}		
-		update_boss($bossInfo['Username'], $bossInfo['Money'], $bossInfo["Production"]);
+		update_boss($bossInfo['Username'], $bossInfo["MaxProduction"], $bossInfo['Money'], $bossInfo["Production"]);
 	}
 	
 	function interact(){
@@ -158,7 +159,7 @@
 		$bidder = $_POST['Bidder'];
 		$bidderInfo = user_info($bidder);
 		$bid = get_bid($username, $bidder);
-		update_boss($bidder, $bidderInfo["Money"] + $bid["Bid"]);
+		update_boss($bidder, $bidderInfo["Money"] + $bid["Bid"], $bidderInfo["MaxProduction"], $bidderInfo["Production"]);
 		remove_bid($username, $bidder);	
 		notify_user($bidder, $username, 3, "");
 	}
@@ -222,13 +223,13 @@
 	function get_production($item){
 		switch ($item){
 			case "Pen":
-				return 1;
+				return .05;
 				break;
 			case "Typewriter":
-				return 5;
+				return 1;
 				break;
 			case "Word Processor":
-				return 100;
+				return 15;
 				break;			
 		}
 		return 0;
@@ -239,18 +240,19 @@
 	}
 	
 	function get_cost($item, $currentQuantity = 0){
+		$cost = 0;
 		switch ($item){
 			case "Pen":
-				return 5 * (pow(1.15, $currentQuantity));
+				$cost = 5 * (pow(1.15, $currentQuantity));
 				break;
 			case "Typewriter":
-				return 100 * (pow(1.15, $currentQuantity));
+				$cost = 100 * (pow(1.15, $currentQuantity));
 				break;
 			case "Word Processor":
-				return 1500 * (pow(1.15, $currentQuantity));
+				$cost = 1500 * (pow(1.15, $currentQuantity));
 				break;	
 		}
-		return 0;
+		return round($cost);
 	}
 	
 	function generate_playerXML(){
