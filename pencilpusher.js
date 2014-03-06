@@ -591,6 +591,21 @@ var openEmployeeInfoPopup = function(name) {
 	});
 }
 
+var activateInfluenceDealer = function(setActive) {
+	var influenceDealerButton = document.getElementById("influenceDealerButton");
+	if (setActive) {
+		influenceDealerButton.style.display = "block";
+	}
+	else {
+		influenceDealerButton.style.display = "none";
+		document.getElementById('influenceDealerPopup').style.display='none';
+	}
+}
+
+var influenceDealer = function() {
+	document.getElementById('influenceDealerPopup').style.display='block';
+}
+
 var newBossLevel = function(bossInfo, color) {
 	var level = 0;
 	var levelDiv = document.getElementById("employeeLevel" + level.toString());

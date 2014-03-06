@@ -32,6 +32,7 @@
 		</div>
 
 			<img src="Images/pencilCoLogoAnimation3.gif" style="width: 15%; position: absolute; margin-left: 10px; margin-top:10px;"/>
+			<img src="Images/influenceDealerAnimation.gif" style="width: 15%; position: absolute; margin-left: 10px; margin-top:30px;" id="influenceDealerButton" onclick="influenceDealer();"/>
 		<center>
 
 			<div id="money">
@@ -114,6 +115,25 @@
 			<button id="employeeInfoPopup_offerBidButton">OFFER BID</button>
 			<button id="employeeInfoPopup_acceptBidButton">ACCEPT BID</button>
 			<div id="employeeInfoPopup_OfficeSupplies"></div>
+		</div>
+
+		<div id="influenceDealerPopup" style="display:none;">
+			<button style="float: right;" onclick="document.getElementById('influenceDealerPopup').style.display='none';">[X] CLOSE</button>
+			<br/><br/>
+			<b>SHADOWY FIGURE:</b> Psst... tired of life on the treadmill? Why play a rigged game, when you can rig it for yourself? 
+			<br/><br/>
+			<b>YOU:</b> ...
+			<br/><br/>
+			<b>SHADOWY FIGURE:</b> They call me the Influence Dealer. I can get you what you need. 
+			<br/><br/>
+			<b>YOU:</b> ...
+			<br/><br/>
+			<b>SHADOWY FIGURE:</b> For a price.
+			<br/><br/>
+			<center>
+			<div id="influenceDealerPrice"> Buy 1 influence for 200 $ </div>
+			<button style="font-size:200%;" onclick="activateInfluenceDealer(false);">BUY INFLUENCE</button>
+			</center>
 		</div>
 	</body>
 
