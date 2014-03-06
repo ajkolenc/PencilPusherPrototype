@@ -45,6 +45,11 @@ var maxScribbleLength = 800;
 var flyingDivNum = 0;
 var flyingDivs = [];
 var chartLevels = [];
+var itemImages = ["", 									//default = NO IMAGE
+	"<img src='Images/penBIG.png' style='width:50%'/>", //Pen
+	"<img src='Images/typewriterBIG.png' style='width:50%'/>", //Typewriter
+	"<img src='Images/wordprocessorBIG.png' style='width:50%'/>" 	//Word Processor
+	];
 
 //data
 var employeeList = [];
@@ -136,6 +141,18 @@ ArlGame.events.mainLoop = function() {
 
 	updateNotifications();
 
+	var toDestroy = [];
+	for (var i = 0; i < flyingDivs.length; i++) {
+		if (flyingDivs[i].update()) {
+			toDestroy.push(flyingDivs[i]);
+		}
+	}
+	for (var i = 0; i < toDestroy.length; i++) {
+		console.log("DESTROY " + i);
+		toDestroy[i].destroy();
+		flyingDivs.splice(flyingDivs.indexOf(toDestroy[i]), 1);
+	}
+
 	//update chart
 	if (menuIndex == 2) {
 		for (var i = 0; i < chartLevels.length; i++) {
@@ -184,10 +201,6 @@ var updateNotifications = function() {
 			notificationDiv.innerHTML += notificationList[i].toHTML();
 		}
 		hasNewNotification = false;
-	}
-
-	for (var i = 0; i < flyingDivs.length; i++) {
-		flyingDivs[i].update();
 	}
 }
 
@@ -298,6 +311,19 @@ var drawPaperLines = function (context, width, height, numLines, color1, color2)
 	ArlDraw.drawLine(context, width/6, 0, width/6, height, 2, color1);
 }
 
+var itemToIndex = function(name) {
+	if (name == "Pen") {
+		return 1;
+	}
+	else if (name == "Typewriter") {
+		return 2;
+	}
+	else if (name == "Word Processor") {
+		return 3;
+	}
+	return 0;
+}
+
 var buyUpgrade = function(cost, itemName) {
 	if (money >= cost) {
 
@@ -315,7 +341,7 @@ var buyUpgrade = function(cost, itemName) {
 				//console.log(gameInfo.player.money);
 				moneyRate = parseInt(gameInfo.player.production)
 
-				var f = new FlyingDiv(250 + (Math.random() * 100), 200, 30, dullRed, 150, 2, "-" + cost + "$");
+				var f = new FlyingDiv(250 + (Math.random() * 100), 200, 30, dullRed, 150, 2, "-" + cost + "$" + "<br/>" + itemImages[itemToIndex(itemName)]);
 			flyingDivs.push(f);
 
 				updateStore();
@@ -784,6 +810,11 @@ FlyingDiv.prototype = {
 
 		this.div.style.marginTop = curY.toString() + "px";
 		this.div.style.color = this.color.toHTML();
+
+		return this.timer.isDone();
+	},
+	destroy: function() {
+		document.body.removeChild(this.div);
 	}
 };
 
