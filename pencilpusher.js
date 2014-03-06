@@ -159,7 +159,7 @@ var updateMoneyCounter = function() {
 	document.getElementById("moneyRateTotal").innerHTML = "<hr/>" + "TOTAL: " + moneyRateTotal + " " + unitPerSecond;
 
 	if (moneyTimer.isDone()) {
-		//money += moneyRateTotal;
+		money += moneyRateTotal;
 
 		moneyTimer.reset();
 	}
