@@ -16,7 +16,7 @@ var timeUntilEmailIsOld = 10; //seconds
 var selectedUserOnChart = "Test User 1";
 
 //ajax server communication
-var username = "Adam";
+var username = "Test User 1";
 var gameInfo;
 var updateTimer = new ArlEtc.Timer(5);
 var hasNewNotification = false;
